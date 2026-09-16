@@ -1,6 +1,6 @@
 ---
 name: iomarkets-topup
-description: Buy real-world things for your principal with USDC on Algorand via x402 — travel eSIMs for 197 destinations, and mobile airtime and data top-ups in 150+ countries delivered to any phone number. Use when the user is travelling and needs data abroad, asks to recharge or top up a phone, buys mobile data, or checks a USDC→local FX rate. No account, no card; signed proof of delivery; automatic on-chain refunds. Prepaid bills and international payouts are built but supplier-gated — GET /v1/catalog is the live answer.
+description: Buy real-world things for your principal with USDC on Algorand via x402 — travel eSIMs for 200+ destinations, and mobile airtime and data top-ups in 150+ countries delivered to any phone number. Use when the user is travelling and needs data abroad, asks to recharge or top up a phone, buys mobile data, or checks a USDC→local FX rate. No account, no card; signed proof of delivery; automatic on-chain refunds. Prepaid bills and international payouts are built but supplier-gated — GET /v1/catalog is the live answer.
 version: 0.2.6
 metadata:
   homepage: https://iomarkets.app
@@ -16,7 +16,7 @@ Real-world checkout for agents. Four HTTP calls, or the `iomarkets-topup` MCP se
 
 **Two products, both selling today:**
 
-- **`type: "esim"` — travel eSIMs, 197 destinations.** $0.50–$50 a package. There is no recipient: an
+- **`type: "esim"` — travel eSIMs, 200+ destinations.** $0.50–$50 a package. There is no recipient: an
   eSIM is delivered to the buyer as an **LPA activation string** they install on their own phone.
   `GET /v1/countries?type=esim` lists every destination; `GET /v1/catalog?type=esim&country=JP` lists
   the packages for one.

@@ -352,7 +352,7 @@ export function proofPageHtml(o: { base: string; brand: string; proof: ProofView
   <h2>${p.can_reorder ? "Want the same eSIM?" : "Let your agent buy real things"}</h2>
   <p>${p.can_reorder
     ? "Get a checkout link for the same package, pay from your own Pera wallet, and the activation code shows on the page. The original buyer earns a share when you do."
-    : "Travel eSIMs for 197 destinations and top-ups in 150+ countries, four HTTP calls, paid per order in USDC on Algorand."}</p>
+    : "Travel eSIMs for 200+ destinations and top-ups in 150+ countries, four HTTP calls, paid per order in USDC on Algorand."}</p>
   <div class="row" style="margin-top:.7rem">
     ${p.can_reorder ? '<button class="btn primary" id="reorder">Get the same eSIM</button>' : '<a class="btn primary" href="/#try">Browse what agents can buy</a>'}
     <a class="btn x" target="_blank" rel="noopener" href="https://x.com/intent/post?text=${esc(encodeURIComponent(shareText))}&amp;url=${esc(encodeURIComponent(p.url))}">Share on X</a>

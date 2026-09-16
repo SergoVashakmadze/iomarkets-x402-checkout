@@ -303,6 +303,15 @@ export function StepRecipients() {
             </Field>
           </div>
 
+          {type === "payout" && (
+            <p className="mx-4 mb-4 rounded-md bg-surface-2/60 px-3 py-2 text-[12.5px] text-muted-foreground">
+              {countries.length <= 5 ? `${countries.length} sample corridors. ` : ""}
+              Bank and mobile-money payouts open country by country as a licensed payout partner is
+              connected. <b className="text-foreground">Airtime &amp; data</b> reaches 155 countries
+              today, and travel eSIMs 200+.
+            </p>
+          )}
+
           {offersError && (
             <p className="mx-4 mb-4 rounded-md bg-failed-soft px-3 py-2 text-[13px] text-failed">
               {offersError} {!demo && "You can explore the whole flow with demo data at ?demo=1."}

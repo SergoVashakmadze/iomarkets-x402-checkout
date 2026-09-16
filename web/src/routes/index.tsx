@@ -6,7 +6,7 @@ import { StepPay } from "@/components/io/StepPay";
 import { StepReceipts } from "@/components/io/StepReceipts";
 import { BatchProvider, useBatch } from "@/lib/io/store";
 
-const TITLE = "IoMarkets — Batch payouts globally, settled in USDC";
+const TITLE = "IoMarkets — Batch payouts and top-ups, settled in USDC";
 const DESCRIPTION =
   "Paste a spreadsheet, lock a price for every recipient, approve once, and watch each cross-border payout settle with an on-chain receipt.";
 

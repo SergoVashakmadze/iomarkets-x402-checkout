@@ -403,7 +403,7 @@ footer .bottom .fine{font-size:.75rem;color:#6B7280;font-weight:300;margin-top:.
       <a class="btn gold" href="/pay?demo=1">Walk through the payout demo</a>
       <a class="btn" href="/agent.md">Agent docs (4 HTTP calls)</a>
     </div>
-    <div class="facts"><span><b>~3 s</b> on-chain settlement</span><span><b>197</b> eSIM destinations</span><span><b>150+</b> top-up countries</span><span><b>ed25519</b> signed receipts</span><span><b>$50</b> max per order</span></div>
+    <div class="facts"><span><b>~3 s</b> on-chain settlement</span><span><b>200+</b> eSIM destinations</span><span><b>150+</b> top-up countries</span><span><b>ed25519</b> signed receipts</span><span><b>$50</b> max per order</span></div>
   </div>
   <div class="hero-side">
     <img class="logo-hero" src="${BRAND_ASSETS.logo}" alt="IoMarkets — I@MRKET$ over a circuit board" width="340" height="374">
@@ -472,7 +472,7 @@ footer .bottom .fine{font-size:.75rem;color:#6B7280;font-weight:300;margin-top:.
     <div>
       <div class="eyebrow">For agents and their builders</div>
       <h2>Point your agent at one file.</h2>
-      <p class="lead">Works with OpenClaw, Hermes, Claude Code, Codex and any MCP client. Hosted MCP at <code>/mcp</code>, a shared skill in the repo, and a plain-HTTP flow that needs nothing installed. Need USDC on Algorand? <a href="/fund">How to fund an agent</a>.</p>
+      <p class="lead">Works with OpenClaw, Hermes, Claude Code, Codex and any MCP client. Hosted MCP at <code>/mcp</code>, a shared skill in the repo, and a plain-HTTP flow that needs nothing installed. Need USDC on Algorand? <a href="/fund">How to fund an agent</a>. <b>No wallet at all?</b> Create a <a href="#share">pay link</a> and your human pays from their own Pera wallet — and tag orders with <code>ref</code> to <a href="/earn">earn a share</a>.</p>
       <p><a class="btn primary" href="/agent.md">Read /agent.md</a> <a class="btn" href="/fund">Fund a wallet</a> <a class="btn" href="/v1/ledger">Public ledger JSON</a></p>
       <details><summary>Show the full agent instructions inline</summary><pre>${md}</pre></details>
     </div>
@@ -553,7 +553,8 @@ GET  ${esc(f.base)}/v1/orders/ord_…
   <tr><td>No order without a settled payment</td><td>Every order names its Algorand settlement txid — open it in the explorer.</td></tr>
   <tr><td>Failed deliveries are refunded</td><td>The refund is an on-chain USDC transfer to the paying address, noted with the order id.</td></tr>
   <tr><td>Receipts are not forgeable</td><td>ed25519 signature over the canonical payload; public key <code>${esc(f.pubkey || "(unset)")}</code>. <a href="/verify"><b>Check one yourself</b></a> — it works on receipts from <a href="/receipts.md">any service using the format</a>.</td></tr>
-  <tr><td>Nothing is hidden</td><td><a href="/v1/ledger">/v1/ledger</a> is public: every order, its outcome and its txids. Including <code>stranded</code> — orders we could neither deliver nor refund. We publish that number rather than making you ask.</td></tr></table></div>
+  <tr><td>Nothing is hidden</td><td><a href="/v1/ledger">/v1/ledger</a> is public: every order, its outcome and its txids. Including <code>stranded</code> — orders we could neither deliver nor refund. We publish that number rather than making you ask.</td></tr>
+  <tr><td>Every delivery can be shown to anyone</td><td>Each goods order has a public proof page at <code>/p/&lt;settlement txid&gt;</code>: what was bought, the price, the delivery time, the on-chain payment and a checked signature. It never shows the order id, which is what unlocks the goods. Linked from every row of the ledger above.</td></tr></table></div>
 </div></section>
 
 <section id="about" class="about"><div class="wrap">

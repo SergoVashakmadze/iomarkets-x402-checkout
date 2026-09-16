@@ -50,7 +50,7 @@ export function registerTools(server: McpServer, ctx: McpContext): void {
       type: z.enum(["topup", "esim", "bill", "payout"]).describe("payout = international payment (bank / mobile money / UPI)"),
       country: z.string().length(2).optional().describe("ISO-3166 alpha-2, e.g. IN"),
       brand: z.string().optional(),
-      // The eSIM catalogue is 3,046 offers across 197 countries. A page, or a country.
+      // The eSIM catalogue is 3,046 offers across 200+ countries. A page, or a country.
       limit: z.number().int().min(0).max(500).optional().describe("page size, default 100; 0 means all"),
       offset: z.number().int().min(0).optional().describe("use next_offset from the previous page"),
     },
