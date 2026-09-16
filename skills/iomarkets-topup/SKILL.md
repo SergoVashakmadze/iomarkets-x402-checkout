@@ -1,7 +1,7 @@
 ---
 name: iomarkets-topup
 description: Buy real-world things for your principal with USDC on Algorand via x402 — travel eSIMs for 200+ destinations, and mobile airtime and data top-ups in 150+ countries delivered to any phone number. Use when the user is travelling and needs data abroad, asks to recharge or top up a phone, buys mobile data, or checks a USDC→local FX rate. No account, no card; signed proof of delivery; automatic on-chain refunds. Prepaid bills and international payouts are built but supplier-gated — GET /v1/catalog is the live answer.
-version: 0.2.6
+version: 0.2.7
 metadata:
   homepage: https://iomarkets.app
   agent_docs: https://iomarkets.app/agent.md
