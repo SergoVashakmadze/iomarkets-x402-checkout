@@ -1,0 +1,288 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * IoMarkets batch payout console — design system.
+ * Type: Space Grotesk (display), IBM Plex Sans (UI), IBM Plex Mono (money).
+ * Accent: cobalt. Semantic state colours (settled/pending/failed) are
+ * deliberately outside the accent hue so state never reads as branding.
+ */
+
+@theme inline {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --radius-sm: calc(var(--radius) - 3px);
+  --radius-md: calc(var(--radius) - 1px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-border: var(--ink-border);
+
+  --color-settled: var(--settled);
+  --color-settled-soft: var(--settled-soft);
+  --color-pending: var(--pending);
+  --color-pending-soft: var(--pending-soft);
+  --color-failed: var(--failed);
+  --color-failed-soft: var(--failed-soft);
+  --color-refunded: var(--refunded);
+  --color-refunded-soft: var(--refunded-soft);
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* A cool paper ground with a real slate bias — panels are white and sit ON it,
+     so a surface reads as a surface. The previous 0.982/1.000 pair was a 1.8%
+     step and was invisible at any brightness. */
+  --background: oklch(0.963 0.009 246);
+  --foreground: oklch(0.205 0.028 262);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.943 0.011 246);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.205 0.028 262);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.205 0.028 262);
+
+  /* Deep cobalt. Sits well clear of settled/pending/failed so state never reads
+     as branding, and is dark enough to carry white text at AA on both grounds. */
+  --primary: oklch(0.482 0.174 253);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --secondary: oklch(0.932 0.012 248);
+  --secondary-foreground: oklch(0.27 0.028 262);
+  --muted: oklch(0.945 0.010 246);
+  --muted-foreground: oklch(0.495 0.026 258);
+  --accent: oklch(0.482 0.174 253);
+  --accent-foreground: oklch(0.99 0.005 250);
+  --destructive: oklch(0.545 0.196 27);
+  --destructive-foreground: oklch(0.99 0.005 250);
+
+  --border: oklch(0.885 0.013 246);
+  --border-strong: oklch(0.795 0.020 250);
+  --input: oklch(0.878 0.014 246);
+  --ring: oklch(0.482 0.174 253);
+
+  /* The header/rail band. A dark ink bar is what separates a product from a
+     template, and it gives the one accent somewhere to be bright against. */
+  --ink: oklch(0.209 0.030 258);
+  --ink-foreground: oklch(0.975 0.006 250);
+  --ink-muted: oklch(0.685 0.024 254);
+  --ink-border: oklch(0.312 0.028 258);
+
+  --settled: oklch(0.5 0.12 158);
+  --settled-soft: oklch(0.94 0.04 158);
+  --pending: oklch(0.62 0.13 78);
+  --pending-soft: oklch(0.95 0.05 85);
+  --failed: oklch(0.53 0.19 27);
+  --failed-soft: oklch(0.95 0.035 27);
+  --refunded: oklch(0.5 0.05 250);
+  --refunded-soft: oklch(0.94 0.012 250);
+
+  --shadow-panel: 0 1px 2px oklch(0.2 0.03 262 / 0.05), 0 1px 3px oklch(0.2 0.03 262 / 0.04);
+  --shadow-raised: 0 4px 12px oklch(0.2 0.03 262 / 0.07), 0 1px 2px oklch(0.2 0.03 262 / 0.05);
+  --shadow-bar: 0 -1px 3px oklch(0.2 0.03 262 / 0.05), 0 -8px 24px oklch(0.2 0.03 262 / 0.05);
+}
+
+.dark {
+  --background: oklch(0.168 0.020 260);
+  --foreground: oklch(0.955 0.006 240);
+  --surface: oklch(0.209 0.021 259);
+  --surface-2: oklch(0.248 0.022 259);
+  --card: oklch(0.209 0.021 259);
+  --card-foreground: oklch(0.955 0.006 240);
+  --popover: oklch(0.232 0.022 259);
+  --popover-foreground: oklch(0.955 0.006 240);
+
+  --primary: oklch(0.715 0.142 253);
+  --primary-foreground: oklch(0.165 0.025 262);
+  --secondary: oklch(0.278 0.021 259);
+  --secondary-foreground: oklch(0.935 0.008 240);
+  --muted: oklch(0.265 0.020 259);
+  --muted-foreground: oklch(0.712 0.020 250);
+  --accent: oklch(0.715 0.142 253);
+  --accent-foreground: oklch(0.165 0.025 262);
+  --destructive: oklch(0.62 0.18 27);
+  --destructive-foreground: oklch(0.16 0.02 250);
+
+  --border: oklch(0.302 0.020 259);
+  --border-strong: oklch(0.412 0.024 259);
+  --input: oklch(0.325 0.020 259);
+  --ring: oklch(0.715 0.142 253);
+
+  /* In dark the ink bar is a shade ABOVE the page, not below — same role
+     (a band that frames the work), inverted relationship. */
+  --ink: oklch(0.230 0.023 258);
+  --ink-foreground: oklch(0.965 0.006 245);
+  --ink-muted: oklch(0.702 0.020 252);
+  --ink-border: oklch(0.335 0.022 260);
+
+  --settled: oklch(0.74 0.14 160);
+  --settled-soft: oklch(0.32 0.05 160);
+  --pending: oklch(0.8 0.13 82);
+  --pending-soft: oklch(0.33 0.05 82);
+  --failed: oklch(0.68 0.17 27);
+  --failed-soft: oklch(0.32 0.06 27);
+  --refunded: oklch(0.74 0.03 250);
+  --refunded-soft: oklch(0.3 0.02 250);
+
+  --shadow-panel: 0 1px 2px oklch(0 0 0 / 0.4), 0 1px 3px oklch(0 0 0 / 0.3);
+  --shadow-raised: 0 4px 14px oklch(0 0 0 / 0.45), 0 1px 2px oklch(0 0 0 / 0.35);
+  --shadow-bar: 0 -1px 3px oklch(0 0 0 / 0.35), 0 -8px 24px oklch(0 0 0 / 0.35);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-feature-settings: "tnum" 1, "cv05" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background: color-mix(in oklch, var(--color-primary) 28%, transparent);
+  }
+}
+
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+@utility panel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
+}
+
+/* The section eyebrow — uppercase, tracked, small. The trading-desk idiom that
+   labels a block without spending a heading on it. */
+@utility eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+/* Money that has to be read at a glance rather than scanned: display face,
+   tabular, tight. Pair with a size class. */
+@utility figure-lg {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Hairline grid used behind the ink header so the bar has texture rather than
+   being a flat block of colour. */
+@utility ink-bar {
+  background-color: var(--color-ink);
+  color: var(--color-ink-foreground);
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklch, white 4%, transparent),
+    transparent 60%
+  );
+}
+
+@keyframes io-pulse-row {
+  0% {
+    background-color: color-mix(in oklch, var(--color-pending) 16%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes io-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+.io-row-enter {
+  animation: io-pulse-row 900ms ease-out;
+}
+
+.io-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 33%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--color-primary) 35%, transparent),
+    transparent
+  );
+  animation: io-shimmer 1.3s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "name": "iomarkets-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Real-world checkout for AI agents on Algorand: eSIMs, mobile top-ups and prepaid bills paid per request in USDC via x402, with signed proof-of-delivery and automatic on-chain refunds.",
+  "packageManager": "pnpm@10.30.0",
+  "engines": {
+    "node": ">=22.5"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "dev:api": "tsx watch src/server.ts",
+    "dev:web": "bun --cwd web run dev",
+    "dev:all": "bun --cwd web run dev & tsx watch src/server.ts",
+    "build:web": "bun --cwd web run build",
+    "install:web": "bun install --cwd web",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:web": "bun --cwd web run test",
+    "test:all": "pnpm test && pnpm test:web",
+    "preflight": "tsx scripts/preflight.ts",
+    "gen-key": "tsx scripts/gen-key.ts",
+    "buy": "tsx scripts/buy.ts",
+    "verify": "tsx scripts/verify-receipt.ts",
+    "mcp": "tsx src/mcp.ts",
+    "check-bazaar": "tsx scripts/check-bazaar.ts",
+    "new-wallet": "tsx scripts/new-wallet.ts",
+    "optin": "tsx scripts/optin-usdc.ts",
+    "check-supplier": "tsx scripts/check-supplier.ts",
+    "check-payout": "tsx scripts/check-payout.ts",
+    "check-esim": "tsx scripts/check-esim.ts",
+    "check-mirror": "tsx scripts/check-mirror.ts",
+    "publish-registry": "tsx scripts/publish-registry.ts",
+    "send-usdc": "tsx scripts/send-usdc.ts",
+    "account": "tsx scripts/account.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@noble/ed25519": "^2.1.0",
+    "@noble/hashes": "^1.6.1",
+    "@x402/avm": "^2.23.0",
+    "@x402/core": "^2.23.0",
+    "@x402/extensions": "^2.23.0",
+    "@x402/hono": "^2.23.0",
+    "algosdk": "^3.1.0",
+    "dotenv": "^16.4.7",
+    "hono": "^4.13.7",
+    "tsx": "^4.19.2",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.11"
+  },
+  "_comment_pnpm_overrides": "qs arrives transitively (@modelcontextprotocol/sdk -> express -> body-parser). Two moderate advisories on 6.15.x: an array-limit bypass via bracket-key comma parsing, and a DoS via attacker-controlled isBuffer. Both are about parsing an attacker-supplied query string, and NOTHING here runs express — the MCP transport is WebStandardStreamableHTTP mounted in Hono, so express ships as dead weight and the vulnerable path is never reached. Pinned forward anyway: an unreachable vulnerability is still a vulnerability once someone wires a second transport, and a clean alert list is what makes the next alert legible.",
+  "pnpm": {
+    "overrides": {
+      "qs": "^6.16.0"
+    }
+  }
+}

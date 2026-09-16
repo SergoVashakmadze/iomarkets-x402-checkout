@@ -1,0 +1,33 @@
+# Build context hygiene. Two of these are load-bearing rather than cosmetic:
+#
+#  - node_modules: the console stage runs `bun install` and then `COPY web/ ./`.
+#    Without this line that COPY would overwrite the container's freshly installed
+#    tree with the HOST's — built for a different libc, and on a different arch on
+#    an arm64 laptop — and the build would fail or, worse, produce a broken bundle.
+#  - .env / secrets: never in a layer, even a discarded one.
+node_modules
+web/node_modules
+
+# Rebuilt inside the image; a stale host copy would silently win.
+web/dist
+web/.output
+web/.nitro
+web/.tanstack
+web/.wrangler
+dist
+
+.env
+.env.*
+!.env.example
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+receipts
+data
+
+.git
+.github
+.claude-plugin
+*.md
+!docs/RECEIPTS.md

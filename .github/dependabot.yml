@@ -1,0 +1,34 @@
+# Dependabot config.
+#
+# ONE grouped PR per ecosystem per week. The group deliberately uses
+# `patterns: ["*"]` with NO `update-types` filter: a group restricted to
+# minor+patch leaves every MAJOR update to open its own PR, which on this
+# estate produced 17 unreviewed PRs the moment the config landed.
+#
+# `cooldown.default-days: 7` enforces the supply-chain policy - nothing
+# younger than a week is ever proposed. Security updates are unaffected by
+# this file; they still arrive immediately and separately.
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: /
+  schedule:
+    interval: weekly
+  cooldown:
+    default-days: 7
+  open-pull-requests-limit: 2
+  groups:
+    all-dependencies:
+      patterns:
+      - '*'
+- package-ecosystem: bun
+  directory: /web
+  schedule:
+    interval: weekly
+  cooldown:
+    default-days: 7
+  open-pull-requests-limit: 2
+  groups:
+    all-dependencies:
+      patterns:
+      - '*'

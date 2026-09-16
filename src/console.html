@@ -1,0 +1,935 @@
+<title>IoMarkets Console</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;450;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F3F5FA; --card:#FFFFFF; --sunk:#E9EDF6;
+  --ink:#0D1B3D; --ink-soft:#3F4F78; --ink-faint:#7A87A8;
+  --rule:#D8DEEC; --rule-soft:#E8ECF5;
+  --accent:#005CBC; --accent-soft:#E3EEFB; --accent-ink:#004FAC;
+  --ok:#1F6B4A; --ok-soft:#E6F0E9;
+  --warn:#8A6A1F; --warn-soft:#F4EEDD;
+  --bad:#A3352B; --bad-soft:#F8EAE8;
+  --focus:#005CBC;
+  --display:"Space Grotesk",system-ui,sans-serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:8px; --shadow:0 1px 2px rgba(13,27,61,.06),0 8px 24px -16px rgba(13,27,61,.35);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0A1430; --card:#111D3F; --sunk:#0D1836;
+  --ink:#E8EDF8; --ink-soft:#B3BDD6; --ink-faint:#7F8BAB;
+  --rule:#243259; --rule-soft:#1B2749;
+  --accent:#7EBBFF; --accent-soft:#14264F; --accent-ink:#9CCBFF;
+  --ok:#6FC397; --ok-soft:#15281F;
+  --warn:#D7B45F; --warn-soft:#2A2314;
+  --bad:#E38D82; --bad-soft:#2E1A17;
+  --focus:#7EBBFF;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --paper:#0A1430; --card:#111D3F; --sunk:#0D1836;
+  --ink:#E8EDF8; --ink-soft:#B3BDD6; --ink-faint:#7F8BAB;
+  --rule:#243259; --rule-soft:#1B2749;
+  --accent:#7EBBFF; --accent-soft:#14264F; --accent-ink:#9CCBFF;
+  --ok:#6FC397; --ok-soft:#15281F;
+  --warn:#D7B45F; --warn-soft:#2A2314;
+  --bad:#E38D82; --bad-soft:#2E1A17;
+  --focus:#7EBBFF;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;text-wrap:balance}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ── top bar ─────────────────────────────────────────── */
+.bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.bar-in{max-width:1120px;margin:0 auto;padding:.7rem 1.25rem;display:flex;align-items:center;gap:.85rem}
+.brand{font-family:var(--display);font-size:1.22rem;font-weight:600;letter-spacing:-.01em;display:flex;align-items:center;gap:.6rem;color:inherit;text-decoration:none}
+.brand img{width:34px;height:37px;object-fit:cover;border-radius:6px;box-shadow:0 0 0 1px var(--rule)}
+.back{display:none;font-size:.8rem;color:var(--ink-faint);text-decoration:none;border:1px solid var(--rule);border-radius:6px;padding:.25rem .55rem}.back:hover{color:var(--ink)}
+@media(min-width:640px){.back{display:inline-block}}
+.brand em{font-style:normal;color:var(--accent)}
+.chip{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;padding:.2rem .45rem;border-radius:3px;border:1px solid var(--rule);color:var(--ink-faint);white-space:nowrap}
+.spacer{flex:1}
+.wallet{display:flex;align-items:center;gap:.7rem}
+.wallet-meta{text-align:right;line-height:1.25;display:none}
+@media(min-width:720px){.wallet-meta{display:block}}
+.wallet-meta .addr{font-family:var(--mono);font-size:.78rem}
+.wallet-meta .sub{font-size:.72rem;color:var(--ink-faint)}
+.tier{display:inline-block;font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.09em;padding:.1rem .36rem;border-radius:3px;border:1px solid currentColor}
+.tier.business{color:var(--ok);background:var(--ok-soft)}
+.tier.standard{color:var(--ink-faint)}
+
+/* ── buttons ─────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem .9rem;border-radius:var(--r);border:1px solid var(--rule);background:var(--card);cursor:pointer;font-weight:500;font-size:.88rem;transition:background .12s,border-color .12s,transform .06s}
+.btn:hover:not(:disabled){border-color:var(--ink-faint)}
+.btn:active:not(:disabled){transform:translateY(1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn.primary,.dark-primary{color:#1B1917}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary{color:#1B1917}}
+.btn.primary:hover:not(:disabled){filter:brightness(1.06)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--ink-soft)}
+.btn.ghost:hover{background:var(--sunk);border-color:var(--rule)}
+.btn.sm{padding:.3rem .6rem;font-size:.8rem}
+
+/* ── shell ───────────────────────────────────────────── */
+main{max-width:1120px;margin:0 auto;padding:1.5rem 1.25rem 5rem;display:flex;flex-direction:column;gap:1.5rem}
+.banner{display:flex;gap:.7rem;align-items:flex-start;padding:.7rem .9rem;border-radius:var(--r);font-size:.85rem;border:1px solid}
+.banner.demo{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
+.banner.err{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.banner b{font-weight:600}
+
+/* ── stepper ─────────────────────────────────────────── */
+.steps{display:flex;gap:0;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.step{flex:1;padding:.7rem .9rem;display:flex;align-items:center;gap:.6rem;border-right:1px solid var(--rule-soft);min-width:0}
+.step:last-child{border-right:none}
+.step .n{width:1.35rem;height:1.35rem;border-radius:50%;border:1px solid var(--rule);display:grid;place-items:center;font-family:var(--mono);font-size:.7rem;flex:none;color:var(--ink-faint)}
+.step .t{font-size:.82rem;color:var(--ink-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step.on{background:var(--accent-soft)}
+.step.on .n{border-color:var(--accent);color:var(--accent-ink)}
+.step.on .t{color:var(--ink);font-weight:500}
+.step.done .n{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.step.done .t{color:var(--ink-soft)}
+
+/* ── cards ───────────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow)}
+.card-h{padding:1rem 1.15rem;border-bottom:1px solid var(--rule-soft);display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.card-h h2{font-size:1.02rem;font-weight:600}
+.card-h .sub{font-size:.82rem;color:var(--ink-faint)}
+.card-b{padding:1.15rem}
+.card-f{padding:.9rem 1.15rem;border-top:1px solid var(--rule-soft);display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;background:var(--sunk);border-radius:0 0 var(--r) var(--r)}
+
+/* ── form ────────────────────────────────────────────── */
+.field{display:flex;flex-direction:column;gap:.3rem;min-width:0}
+label{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-faint)}
+select,input[type=text],input[type=number],textarea{background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:.45rem .6rem;font-size:.9rem;width:100%}
+textarea{font-family:var(--mono);font-size:.8rem;min-height:7rem;resize:vertical}
+.row3{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.9rem}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden}
+.seg button{padding:.45rem .85rem;background:var(--card);border:none;cursor:pointer;font-size:.85rem;border-right:1px solid var(--rule)}
+.seg button:last-child{border-right:none}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent-ink);font-weight:500}
+
+/* ── table ───────────────────────────────────────────── */
+.tw{overflow-x:auto;border-top:1px solid var(--rule-soft)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{text-align:left;font-family:var(--mono);font-size:.63rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-faint);font-weight:500;padding:.6rem .75rem;border-bottom:1px solid var(--rule);white-space:nowrap;background:var(--card);position:sticky;top:0}
+td{padding:.55rem .75rem;border-bottom:1px solid var(--rule-soft);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+td.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.bad td{background:var(--bad-soft)}
+.cellerr{display:block;font-size:.72rem;color:var(--bad);margin-top:.1rem}
+.pill{display:inline-flex;align-items:center;gap:.3rem;font-family:var(--mono);font-size:.63rem;text-transform:uppercase;letter-spacing:.08em;padding:.16rem .42rem;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.pill.ok{color:var(--ok);background:var(--ok-soft)}
+.pill.pend{color:var(--warn);background:var(--warn-soft)}
+.pill.bad{color:var(--bad);background:var(--bad-soft)}
+.pill.idle{color:var(--ink-faint)}
+.dot{width:.4rem;height:.4rem;border-radius:50%;background:currentColor;flex:none}
+.pill.pend .dot{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ── figures ─────────────────────────────────────────── */
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;background:var(--card)}
+.fig{padding:.9rem 1rem;border-right:1px solid var(--rule-soft)}
+.fig:last-child{border-right:none}
+.fig dt{font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-faint);margin-bottom:.2rem}
+.fig dd{margin:0;font-family:var(--display);font-size:1.45rem;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.fig dd small{display:block;font-family:var(--sans);font-size:.74rem;font-weight:400;color:var(--ink-faint);letter-spacing:0}
+.fig.warn dd{color:var(--warn)}
+.fig.bad dd{color:var(--bad)}
+
+/* ── progress ────────────────────────────────────────── */
+.bar-track{height:4px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;background:var(--accent);width:0;transition:width .3s ease}
+.hint{font-size:.8rem;color:var(--ink-faint)}
+.hide{display:none!important}
+a{color:var(--accent-ink)}
+.empty{padding:2.5rem 1.15rem;text-align:center;color:var(--ink-faint);font-size:.9rem}
+</style>
+
+<div class="bar"><div class="bar-in">
+  <a class="brand" href="/" title="IoMarkets — back to the site"><img src="/brand/logo.webp" alt="IoMarkets logo" width="34" height="37">IoMarkets<em>.</em></a>
+  <a class="back" href="/">&larr; Back to iomarkets.app</a>
+  <span class="chip" id="netchip">algorand</span>
+  <span class="spacer"></span>
+  <div class="wallet">
+    <div class="wallet-meta hide" id="wmeta">
+      <div class="addr" id="waddr"></div>
+      <div class="sub"><span class="tier standard" id="wtier">standard</span> <span id="wremain"></span></div>
+    </div>
+    <button class="btn primary" id="connect">Connect wallet</button>
+  </div>
+</div></div>
+
+<main>
+  <div class="banner demo hide" id="demobanner">
+    <b>Demo</b>
+    <span>This is a sandbox walkthrough with sample recipients — no wallet is connected and no money moves. Every screen is the real one.</span>
+  </div>
+  <div class="banner err hide" id="errbanner"><b>Problem</b><span id="errtext"></span></div>
+
+  <div class="steps" id="stepper">
+    <div class="step on" data-step="1"><span class="n">1</span><span class="t">Recipients</span></div>
+    <div class="step" data-step="2"><span class="n">2</span><span class="t">Review</span></div>
+    <div class="step" data-step="3"><span class="n">3</span><span class="t">Pay</span></div>
+    <div class="step" data-step="4"><span class="n">4</span><span class="t">Receipts</span></div>
+  </div>
+
+  <!-- ── step 1 ─────────────────────────────────────── -->
+  <section id="s1">
+    <div class="card">
+      <div class="card-h">
+        <h2 id="s1h">Who are you paying?</h2>
+        <span class="spacer"></span>
+        <div class="seg" role="group" aria-label="Payment type">
+          <button id="t-payout" aria-pressed="true">Bank &amp; mobile money</button>
+          <button id="t-topup" aria-pressed="false">Airtime &amp; data</button>
+          <button id="t-esim" aria-pressed="false">eSIMs</button>
+        </div>
+      </div>
+      <div class="card-b" style="display:flex;flex-direction:column;gap:1.15rem">
+        <div class="row3">
+          <div class="field"><label for="country">Destination</label><select id="country"></select></div>
+          <div class="field"><label for="offer" id="offerlabel">Corridor</label><select id="offer"></select></div>
+          <div class="field" id="amountfield"><label for="amount">Amount each</label><input type="number" id="amount" min="1" step="1" placeholder="e.g. 50"></div>
+        </div>
+        <div class="row3" id="senderrow">
+          <div class="field"><label for="sname">Sending as — legal name</label><input type="text" id="sname" placeholder="Acme Payments Ltd" autocomplete="organization"></div>
+          <div class="field"><label for="scountry">Sender country</label><input type="text" id="scountry" maxlength="2" placeholder="GB" autocomplete="country" style="text-transform:uppercase"></div>
+          <div class="field" style="justify-content:flex-end"><span class="hint">Who the money is from. Required on every international payment, and remembered on this device.</span></div>
+        </div>
+        <div class="field">
+          <label for="csv" id="csvlabel">Recipients — paste rows, one per line</label>
+          <textarea id="csv" spellcheck="false"></textarea>
+          <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.15rem">
+            <span class="hint" id="cols"></span>
+            <span class="spacer"></span>
+            <button class="btn sm ghost" id="template">Download template</button>
+            <label class="btn sm ghost" for="file" style="cursor:pointer">Upload .csv<input type="file" id="file" accept=".csv,text/csv" hidden></label>
+            <button class="btn sm ghost" id="sample">Use sample data</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-f">
+        <span class="hint" id="s1sum">No recipients yet.</span>
+        <span class="spacer"></span>
+        <button class="btn primary" id="to2" disabled>Review batch</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── step 2 ─────────────────────────────────────── -->
+  <section id="s2" class="hide" style="display:flex;flex-direction:column;gap:1.25rem">
+    <dl class="figs" id="figs2"></dl>
+    <div class="banner err hide" id="limitwarn"><b>Over your limit</b><span id="limittext"></span></div>
+    <div class="card">
+      <div class="card-h"><h2>Batch</h2><span class="sub" id="quotehint">Locking a price for each recipient…</span>
+        <span class="spacer"></span><div class="bar-track" style="width:140px"><div class="bar-fill" id="qbar"></div></div></div>
+      <div class="tw"><table id="t2"></table></div>
+      <div class="card-f">
+        <button class="btn ghost" id="back1">Back</button>
+        <span class="spacer"></span>
+        <span class="hint">Prices are locked for 10 minutes.</span>
+        <button class="btn primary" id="to3" disabled>Approve &amp; pay</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── step 3 ─────────────────────────────────────── -->
+  <section id="s3" class="hide" style="display:flex;flex-direction:column;gap:1.25rem">
+    <dl class="figs" id="figs3"></dl>
+    <div class="card">
+      <div class="card-h"><h2>Paying</h2><span class="sub" id="payhint">Approve each payment in your wallet.</span>
+        <span class="spacer"></span><div class="bar-track" style="width:140px"><div class="bar-fill" id="pbar"></div></div></div>
+      <div class="tw"><table id="t3"></table></div>
+      <div class="card-f"><span class="hint" id="payfoot">Money settles on-chain before anything is bought. Anything that fails is refunded automatically.</span>
+        <span class="spacer"></span><button class="btn primary hide" id="to4">See receipts</button></div>
+    </div>
+  </section>
+
+  <!-- ── step 4 ─────────────────────────────────────── -->
+  <section id="s4" class="hide" style="display:flex;flex-direction:column;gap:1.25rem">
+    <dl class="figs" id="figs4"></dl>
+    <div class="card">
+      <div class="card-h"><h2>Receipts</h2><span class="sub">Every line is signed and verifiable by anyone — <a href="/verify" target="_blank" rel="noopener">check one</a>.</span>
+        <span class="spacer"></span>
+        <button class="btn sm" id="dlcsv">Download CSV</button>
+        <button class="btn sm ghost" id="restart">New batch</button></div>
+      <div class="tw"><table id="t4"></table></div>
+    </div>
+  </section>
+</main>
+
+<script type="module">
+// The batch console. One page, four steps, no build step: the x402 client, the AVM
+// exact scheme and Pera all load as ES modules from jsDelivr at the moment they are
+// first needed, so nothing is downloaded by someone who is only looking.
+//
+// Live mode is switched on by the server injecting window.__IOM__ (src/console.ts).
+// Without it the page runs as a demo against canned data — which is what makes the
+// same file publishable as a walkthrough for someone who has no wallet yet.
+
+const CFG = Object.assign({ base: "", network: "algorand", algod: "https://mainnet-api.algonode.cloud", live: "https://iomarkets.app/console", demo: true }, window.__IOM__ || {});
+// ?demo runs the walkthrough against canned data on the live site too — the version
+// you show someone who has no wallet yet, without sending them somewhere else.
+if (new URLSearchParams(location.search).has("demo")) CFG.demo = true;
+const API = (p) => CFG.base + p;
+const $ = (id) => document.getElementById(id);
+const el = (tag, attrs = {}, ...kids) => {
+  const n = document.createElement(tag);
+  // No innerHTML branch on purpose: every value here is either a server string or
+  // something a user typed, and .append() treats both as text.
+  for (const [k, v] of Object.entries(attrs)) k === "class" ? (n.className = v) : n.setAttribute(k, v);
+  for (const k of kids) n.append(k);
+  return n;
+};
+const usd = (n) => "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const short = (a) => (a ? a.slice(0, 6) + "…" + a.slice(-4) : "");
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Open on something that can actually be sold. The server injects what the wired
+// suppliers can fill (CFG.products); without it — the demo, or an older build — the
+// original default stands. A live console whose first screen says "No corridors here
+// yet" is a shop with its shutters down and the lights on.
+const SELLABLE = Array.isArray(CFG.products) && CFG.products.length ? CFG.products : null;
+const FIRST_TYPE = SELLABLE ? (["payout", "topup", "esim"].find((t) => SELLABLE.includes(t)) ?? "payout") : "payout";
+
+const S = {
+  type: FIRST_TYPE, country: "NG", offer: null, offers: [], amount: 50,
+  rows: [], payer: null, limits: null, pera: null, step: 1, sender: null,
+};
+
+const COUNTRIES = {
+  payout: [["NG", "Nigeria"], ["KE", "Kenya"], ["GH", "Ghana"], ["IN", "India"], ["PH", "Philippines"]],
+  topup: [["NG", "Nigeria"], ["KE", "Kenya"], ["GH", "Ghana"], ["IN", "India"], ["PH", "Philippines"], ["GB", "United Kingdom"], ["BR", "Brazil"], ["ID", "Indonesia"], ["PK", "Pakistan"], ["EG", "Egypt"]],
+  // Where the eSIM works, not where the buyer is. A traveller picks their destination.
+  esim: [["AE", "United Arab Emirates"], ["TR", "Türkiye"], ["IN", "India"], ["US", "United States"], ["GB", "United Kingdom"], ["ES", "Spain"], ["FR", "France"], ["IT", "Italy"], ["TH", "Thailand"], ["JP", "Japan"], ["EG", "Egypt"], ["ZA", "South Africa"]],
+};
+
+/** eSIMs are bought for nobody: there is no recipient, no phone number, no account. */
+const IS_ESIM = () => S.type === "esim";
+
+// ── demo fixtures ──────────────────────────────────────────────────────────
+const DEMO_OFFERS = {
+  payout: [
+    { offerId: "demo-ng-bank", name: "Bank transfer (NGN)", brandName: "Nigerian banks", country: "NG", payoutMethod: "bank", requiredFields: ["full_name", "account_number", "bank_code"], settlementSeconds: 120 },
+    { offerId: "demo-ng-momo", name: "Mobile money (NGN)", brandName: "OPay / PalmPay", country: "NG", payoutMethod: "mobile_money", requiredFields: ["full_name", "phone"], settlementSeconds: 60 },
+  ],
+  topup: [{ offerId: "demo-ng-airtel", name: "Airtel airtime", brandName: "Airtel", country: "NG", requiredFields: ["phone"], settlementSeconds: 20 }],
+  esim: [
+    { offerId: "demo-esim-ae-1d", name: "1 GB/day · 1 day", brandName: "eSIM", country: "AE", requiredFields: [], settlementSeconds: 30, price_usdc_from: "3.290000" },
+    { offerId: "demo-esim-ae-15d", name: "2 GB · 15 days", brandName: "eSIM", country: "AE", requiredFields: [], settlementSeconds: 30, price_usdc_from: "13.360000" },
+  ],
+};
+// eSIM rows are labels for the buyer's own reference — nothing is sent anywhere.
+const DEMO_ESIM_ROWS = `Sales trip — Dubai
+Sales trip — Dubai (spare)
+Ops handset`;
+const DEMO_ROWS = `Adebayo Okonkwo,0123456789,044
+Chioma Nwosu,2233445566,058
+Emeka Balogun,7788990011,033
+Fatima Yusuf,4455667788,057
+Tunde Adeyemi,9900112233,011`;
+
+function showError(msg) { $("errtext").textContent = msg; $("errbanner").classList.remove("hide"); }
+function clearError() { $("errbanner").classList.add("hide"); }
+
+// ── step chrome ────────────────────────────────────────────────────────────
+function goto(n) {
+  S.step = n;
+  for (const s of document.querySelectorAll(".step")) {
+    const i = Number(s.dataset.step);
+    s.classList.toggle("on", i === n);
+    s.classList.toggle("done", i < n);
+  }
+  for (const i of [1, 2, 3, 4]) $("s" + i).classList.toggle("hide", i !== n);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function figs(target, items) {
+  const dl = $(target); dl.textContent = "";
+  for (const f of items) {
+    const d = el("div", { class: "fig" + (f.tone ? " " + f.tone : "") });
+    d.append(el("dt", {}, f.label));
+    const dd = el("dd", {}, String(f.value));
+    if (f.sub) dd.append(el("small", {}, f.sub));
+    d.append(dd);
+    dl.append(d);
+  }
+}
+
+// ── wallet ─────────────────────────────────────────────────────────────────
+async function connect() {
+  clearError();
+  if (CFG.demo) { location.href = CFG.live; return; }  // the demo's only real affordance
+  try {
+    const { PeraWalletConnect } = await import("https://cdn.jsdelivr.net/npm/@perawallet/connect@1.6.0/+esm");
+    S.pera = new PeraWalletConnect({ chainId: CFG.network.includes("test") ? 416002 : 416001 });
+    const accounts = await S.pera.connect();
+    S.pera.connector?.on("disconnect", () => location.reload());
+    S.payer = accounts[0];
+    await refreshLimits();
+  } catch (e) {
+    if (String(e).includes("CONNECT_MODAL_CLOSED")) return;
+    showError("Could not connect a wallet: " + (e?.message || e));
+  }
+}
+
+async function refreshLimits() {
+  $("wmeta").classList.remove("hide");
+  $("connect").classList.add("hide");
+  $("waddr").textContent = short(S.payer);
+  try {
+    const r = await fetch(API("/v1/limits?payer=" + encodeURIComponent(S.payer)));
+    S.limits = await r.json();
+    const t = $("wtier");
+    t.textContent = S.limits.tier;
+    t.className = "tier " + S.limits.tier;
+    $("wremain").textContent = "up to " + usd(S.limits.max_payout_usdc) + " per payment";
+  } catch { $("wremain").textContent = "limits unavailable"; }
+}
+
+// ── catalogue ──────────────────────────────────────────────────────────────
+// Destination names without shipping a country table: the browser already has one.
+// Falls back to the bare code where a browser does not (older Safari).
+const REGION_NAMES = (() => {
+  try { return new Intl.DisplayNames(["en"], { type: "region" }); } catch { return null; }
+})();
+const countryName = (code) => {
+  try { return REGION_NAMES?.of(code) || code; } catch { return code; }
+};
+
+/** Curated fallback per product; replaced by the live list where the supplier has one. */
+function fillCountries(list) {
+  const sel = $("country"); sel.textContent = "";
+  const pairs = list && list.length ? list : COUNTRIES[S.type];
+  for (const [code, name] of pairs) sel.append(el("option", { value: code }, name + " (" + code + ")"));
+  sel.value = pairs.some(([c]) => c === S.country) ? S.country : pairs[0][0];
+  S.country = sel.value;
+}
+
+/**
+ * Ask the service where this product can actually be delivered.
+ *
+ * The console shipped with twelve hand-picked eSIM destinations because nothing could
+ * tell it any better; the catalogue has 197. An empty answer means the supplier cannot
+ * enumerate (airtime), NOT that there are no destinations — so we keep the curated list
+ * rather than emptying the dropdown.
+ */
+async function liveCountries(type) {
+  if (CFG.demo) return null;
+  try {
+    const r = await fetch(API("/v1/countries?type=" + type));
+    const d = await r.json();
+    if (!d.enumerable || !Array.isArray(d.countries) || !d.countries.length) return null;
+    return d.countries
+      .map((c) => [c.code, countryName(c.code)])
+      .sort((a, b) => a[1].localeCompare(b[1]));
+  } catch { return null; }
+}
+
+async function loadOffers() {
+  const sel = $("offer");
+  sel.textContent = ""; sel.append(el("option", {}, "Loading…"));
+  let offers = [];
+  // The demo catalogue is keyed by country for payouts only; airtime and eSIMs show
+  // their fixtures whatever destination is picked, so the walkthrough never dead-ends
+  // on an empty corridor list.
+  if (CFG.demo) { await sleep(220); offers = (DEMO_OFFERS[S.type] || []).filter((o) => S.type !== "payout" || S.country === "NG"); }
+  else {
+    try {
+      // limit=0: every offer for this ONE country. The catalogue route pages by default
+      // (an eSIM catalogue is thousands of offers), and a picker that silently showed the
+      // first hundred would hide packages a buyer came here to choose.
+      const r = await fetch(API("/v1/catalog?limit=0&type=" + S.type + "&country=" + S.country));
+      offers = (await r.json()).offers || [];
+    } catch (e) { showError("Could not load corridors: " + (e?.message || e)); }
+  }
+  S.offers = offers;
+  sel.textContent = "";
+  if (!offers.length) {
+    sel.append(el("option", {}, IS_ESIM() ? "No packages here yet" : "No corridors here yet"));
+    S.offer = null;
+  }
+  else {
+    for (const o of offers) sel.append(el("option", { value: o.offerId }, o.name + (o.brandName ? " · " + o.brandName : "")));
+    S.offer = offers[0];
+  }
+  updateColumns();
+}
+
+function columnsFor() {
+  if (!S.offer) return [];
+  // An eSIM is delivered to nobody: no phone, no account, no name. The rows are the
+  // buyer's own labels, so there are no columns to validate.
+  if (IS_ESIM()) return [];
+  return S.offer.requiredFields && S.offer.requiredFields.length ? S.offer.requiredFields : ["phone"];
+}
+function updateColumns() {
+  const c = columnsFor();
+  $("cols").textContent = !S.offer ? "Pick a package first"
+    : IS_ESIM() ? "One eSIM per line. The text is your own label — it is not sent anywhere and does not appear on the receipt."
+    : c.length ? "Columns: " + c.join(", ") + " — comma separated, one recipient per line"
+    : "Pick a corridor first";
+  parseRows();
+}
+
+// ── rows ───────────────────────────────────────────────────────────────────
+// A payment file is parsed properly or not at all.
+//
+// `line.split(",")` looked fine and was the most dangerous code on the page. A payee
+// whose name contains a comma — "Okonkwo, Adebayo" out of any ordinary spreadsheet
+// export — shifts every field one place left: the account number becomes the name, the
+// bank code becomes the account number, and the surplus field was silently reinterpreted
+// as a per-row amount. The row validated green and the money went to a different account
+// for a different sum, with nothing anywhere in the flow saying so. RFC 4180 quoting,
+// and an exact column count, are the fix.
+function parseCsvLine(line) {
+  const out = [];
+  let cur = "", inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (inQuotes) {
+      if (c === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else inQuotes = false; }
+      else cur += c;
+    } else if (c === '"' && cur.trim() === "") { inQuotes = true; cur = ""; }
+    else if (c === ",") { out.push(cur.trim()); cur = ""; }
+    else cur += c;
+  }
+  out.push(cur.trim());
+  return { parts: out, unterminated: inQuotes };
+}
+
+function readSender() {
+  const name = $("sname").value.trim();
+  const country = $("scountry").value.trim().toUpperCase();
+  S.sender = name && /^[A-Z]{2}$/.test(country) ? { name, country } : null;
+  try { if (S.sender) localStorage.setItem("iom.sender", JSON.stringify(S.sender)); } catch { /* private window */ }
+  return S.sender;
+}
+
+function parseRows() {
+  const cols = columnsFor();
+  readSender();
+  const batchAmount = Number($("amount").value);
+  const lines = $("csv").value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  S.rows = lines.map((line, i) => {
+    const { parts, unterminated } = parseCsvLine(line);
+    const row = { i, fields: {}, amount: batchAmount, errors: [], status: "idle" };
+    if (unterminated) row.errors.push('unclosed quote — a " was opened and never closed');
+
+    // An eSIM row is one eSIM. There is nothing to validate but the fact of the line:
+    // no recipient to mis-shape, and the price is the package's own.
+    if (IS_ESIM()) {
+      row.fields = {};
+      row.amount = undefined;
+      row.label = line.trim() || "eSIM " + (i + 1);
+      return row;
+    }
+
+    // Exactly the corridor's columns, or those plus one amount. Anything else is a
+    // mis-shaped row and is refused by name rather than guessed at.
+    if (parts.length === cols.length + 1) {
+      const a = Number(parts[cols.length]);
+      if (Number.isFinite(a) && a > 0) row.amount = a;
+      else row.errors.push(`last column "${parts[cols.length]}" is not a positive amount`);
+    } else if (parts.length !== cols.length) {
+      row.errors.push(`expected ${cols.length} columns (${cols.join(", ")}) or ${cols.length + 1} with an amount — got ${parts.length}. A value containing a comma must be "quoted".`);
+    }
+
+    cols.forEach((c, j) => { row.fields[c] = parts[j] || ""; });
+    for (const c of cols) if (!row.fields[c]) row.errors.push("missing " + c);
+    // Cheap shape check on the one field whose format is universal. It is also the
+    // check that catches a shifted row when everything else about it looks plausible.
+    if (row.fields.phone && !/^[+()\-\s\d]{6,20}$/.test(row.fields.phone)) row.errors.push(`"${row.fields.phone}" does not look like a phone number`);
+    if (!Number.isFinite(row.amount) || row.amount <= 0) row.errors.push("amount must be a positive number");
+    row.label = row.fields.full_name || row.fields.phone || Object.values(row.fields)[0] || "recipient " + (i + 1);
+    return row;
+  });
+  const bad = S.rows.filter((r) => r.errors.length).length;
+  const needSender = S.type === "payout" && !S.sender;
+  $("s1sum").textContent = !S.rows.length ? (IS_ESIM() ? "No eSIMs yet." : "No recipients yet.")
+    : needSender ? "Fill in who the money is from before you can price this batch."
+    : S.rows.length + (IS_ESIM() ? " eSIM" : " recipient") + (S.rows.length === 1 ? "" : "s") + (bad ? " · " + bad + " need fixing" : " · all rows look good");
+  $("to2").disabled = !S.rows.length || bad > 0 || !S.offer || needSender;
+}
+
+// ── step 2: quote every row ────────────────────────────────────────────────
+function renderTable(id, cols, rows, cell) {
+  const t = $(id); t.textContent = "";
+  const head = el("tr");
+  for (const c of cols) head.append(el("th", c.num ? { class: "num", style: "text-align:right" } : {}, c.label));
+  t.append(el("thead", {}, head));
+  const body = el("tbody");
+  for (const r of rows) {
+    const tr = el("tr", r.errors && r.errors.length ? { class: "bad" } : {});
+    for (const c of cols) tr.append(cell(r, c));
+    body.append(tr);
+  }
+  t.append(body);
+  if (!rows.length) t.append(el("caption", { class: "empty" }, "Nothing here yet."));
+}
+
+const S2COLS_PAY = [{ key: "who", label: "Recipient" }, { key: "detail", label: "Sending to" }, { key: "amount", label: "Amount", num: true }, { key: "price", label: "You pay (USDC)", num: true }, { key: "status", label: "Status" }];
+const S2COLS_ESIM = [{ key: "who", label: "Label" }, { key: "detail", label: "Package" }, { key: "price", label: "You pay (USDC)", num: true }, { key: "status", label: "Status" }];
+/** An eSIM has no recipient and no per-row amount, so it gets a narrower table. */
+const s2cols = () => (IS_ESIM() ? S2COLS_ESIM : S2COLS_PAY);
+
+function pill(status, text) {
+  const cls = { delivered: "ok", quoted: "ok", paid: "pend", quoting: "pend", paying: "pend", polling: "pend", refunded: "pend", failed: "bad", error: "bad", idle: "idle" }[status] || "idle";
+  const p = el("span", { class: "pill " + cls });
+  if (cls === "pend") p.append(el("span", { class: "dot" }));
+  p.append(text || status);
+  return p;
+}
+
+function s2cell(r, c) {
+  if (c.key === "who") {
+    const td = el("td", {}, r.label);
+    if (r.errors && r.errors.length) td.append(el("span", { class: "cellerr" }, r.errors.join(" · ")));
+    return td;
+  }
+  if (c.key === "detail") {
+    const detail = columnsFor().filter((f) => f !== "full_name").map((f) => r.fields[f]).filter(Boolean).join(" · ");
+    return el("td", { class: "mono", style: "font-size:.78rem;color:var(--ink-soft)" }, detail || (S.offer ? S.offer.name : ""));
+  }
+  if (c.key === "amount") return el("td", { class: "num" }, String(r.amount));
+  if (c.key === "price") return el("td", { class: "num" }, r.price ? Number(r.price).toFixed(2) : "—");
+  const td = el("td", {});
+  td.append(pill(r.status, r.status === "idle" ? "waiting" : r.status));
+  if (r.error) td.append(el("span", { class: "cellerr" }, r.error));
+  return td;
+}
+
+async function quoteAll() {
+  $("to3").disabled = true;
+  let done = 0;
+  for (const r of S.rows) {
+    r.status = "quoting"; renderTable("t2", s2cols(), S.rows, s2cell);
+    try {
+      // Reached once through a race between switching product and pressing Review.
+      // A missing offer must read as a missing offer, not as "Cannot read properties
+      // of null" in a cell a customer is looking at.
+      if (!S.offer) throw new Error("no package selected — go back and pick one");
+      if (CFG.demo) { await sleep(120); r.price = IS_ESIM() ? Number(S.offer.price_usdc_from || 3.29).toFixed(2) : (r.amount * 1.04 + 0.05).toFixed(2); r.quoteId = "q_demo" + r.i; }
+      else {
+        // An eSIM carries neither a recipient nor an amount: the package is fixed-price
+        // and is delivered as an activation string to whoever placed the order.
+        const body = IS_ESIM()
+          ? { type: "esim", offerId: S.offer.offerId, recipient: {} }
+          : { type: S.type, offerId: S.offer.offerId, amount: r.amount, recipient: S.type === "topup" ? { phone: r.fields.phone } : { fields: r.fields } };
+        if (S.payer) body.payer = S.payer;
+        // Every international payment names its sender. A business account would have
+        // one filled in server-side from its KYB record, but the console cannot know
+        // that an address is onboarded, so it always asks.
+        if (S.type === "payout" && S.sender) body.sender = S.sender;
+        const res = await fetch(API("/v1/quote"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+        const j = await res.json();
+        if (!res.ok) throw new Error(j.error || res.statusText);
+        r.price = j.price_usdc; r.quoteId = j.quoteId;
+      }
+      r.status = "quoted"; r.error = null;
+    } catch (e) { r.status = "error"; r.error = String(e.message || e); }
+    done++;
+    $("qbar").style.width = Math.round((done / S.rows.length) * 100) + "%";
+    renderTable("t2", s2cols(), S.rows, s2cell);
+    updateTotals();
+  }
+  const good = S.rows.filter((r) => r.status === "quoted");
+  $("quotehint").textContent = good.length + " of " + S.rows.length + " priced";
+  $("to3").disabled = !good.length || overLimit();
+}
+
+function total() { return S.rows.filter((r) => r.status === "quoted").reduce((a, r) => a + Number(r.price), 0); }
+
+function overLimit() {
+  if (!S.limits) return false;
+  const t = total();
+  const perOrder = Number(S.type === "payout" ? S.limits.max_payout_usdc : S.limits.max_order_usdc);
+  const over = S.rows.filter((r) => r.price && Number(r.price) > perOrder);
+  const daily = Number(S.limits.daily_usdc);
+  const msgs = [];
+  if (over.length) msgs.push(over.length + " payment" + (over.length === 1 ? " is" : "s are") + " above your " + usd(perOrder) + " per-payment limit");
+  // The server holds the authoritative spend-to-date; this is the ceiling, so a batch
+  // can still be refused for what was already sent today. That refusal is shown per row.
+  if (t > daily) msgs.push("this batch is " + usd(t) + " against a " + usd(daily) + " daily limit");
+  if (msgs.length) { $("limittext").textContent = msgs.join("; ") + ". Business accounts carry higher ceilings — talk to us."; $("limitwarn").classList.remove("hide"); return true; }
+  $("limitwarn").classList.add("hide"); return false;
+}
+
+function updateTotals() {
+  const good = S.rows.filter((r) => r.status === "quoted");
+  const t = total();
+  figs("figs2", [
+    { label: "Recipients", value: good.length, sub: S.rows.length === good.length ? "all priced" : S.rows.length - good.length + " not priced" },
+    { label: "You pay", value: usd(t), sub: "USDC, all in" },
+    { label: "Average", value: good.length ? usd(t / good.length) : "—", sub: "per recipient" },
+    { label: "Destination", value: S.country, sub: S.offer ? S.offer.name : "" },
+  ]);
+}
+
+// ── step 3: pay ────────────────────────────────────────────────────────────
+const S3COLS = [{ key: "who", label: "Recipient" }, { key: "price", label: "USDC", num: true }, { key: "status", label: "Status" }, { key: "tx", label: "Settlement" }];
+function s3cell(r, c) {
+  if (c.key === "who") return el("td", {}, r.label);
+  if (c.key === "price") return el("td", { class: "num" }, r.price ? Number(r.price).toFixed(2) : "—");
+  if (c.key === "tx") {
+    const td = el("td", { class: "mono", style: "font-size:.76rem" });
+    if (r.settlement) td.append(el("a", { href: "https://lora.algokit.io/mainnet/transaction/" + r.settlement, target: "_blank", rel: "noopener" }, r.settlement.slice(0, 10) + "…"));
+    else td.append("—");
+    return td;
+  }
+  const td = el("td", {});
+  td.append(pill(r.status, r.status));
+  if (r.error) td.append(el("span", { class: "cellerr" }, r.error));
+  return td;
+}
+
+let x402 = null;
+async function x402Client() {
+  if (x402) return x402;
+  const [core, http, avm, algosdkMod] = await Promise.all([
+    import("https://cdn.jsdelivr.net/npm/@x402/core@2.23.0/dist/esm/client/index.mjs/+esm"),
+    import("https://cdn.jsdelivr.net/npm/@x402/core@2.23.0/dist/esm/http/index.mjs/+esm"),
+    import("https://cdn.jsdelivr.net/npm/@x402/avm@2.23.0/dist/esm/exact/client/index.mjs/+esm"),
+    import("https://cdn.jsdelivr.net/npm/algosdk@3.1.0/+esm"),
+  ]);
+  const algosdk = algosdkMod.default || algosdkMod;
+  // ClientAvmSigner over Pera. Pera returns only the transactions it was asked to
+  // sign, in order, so the nulls have to be put back in the right places.
+  const signer = {
+    address: S.payer,
+    async signTransactions(txns, indexesToSign) {
+      const want = indexesToSign ?? txns.map((_, i) => i);
+      const group = txns.map((b, i) => (want.includes(i)
+        ? { txn: algosdk.decodeUnsignedTransaction(b) }
+        : { txn: algosdk.decodeUnsignedTransaction(b), signers: [] }));
+      const signed = await S.pera.signTransaction([group]);
+      let k = 0;
+      return txns.map((_, i) => (want.includes(i) ? signed[k++] : null));
+    },
+  };
+  const client = core.x402Client.fromConfig({
+    schemes: [{ network: "algorand:*", client: new avm.ExactAvmScheme(signer, { algodUrl: CFG.algod }) }],
+    spendControls: { maxAmountPerPayment: "$" + Number(S.limits?.max_payout_usdc || 200).toFixed(2) },
+  });
+  x402 = new http.x402HTTPClient(client);
+  return x402;
+}
+
+async function payRow(r) {
+  if (CFG.demo) {
+    r.status = "paying"; render3(); await sleep(500);
+    r.settlement = "DEMO" + Math.random().toString(36).slice(2, 12).toUpperCase();
+    r.status = "polling"; render3(); await sleep(700);
+    r.status = "delivered"; r.orderId = "ord_demo" + r.i;
+    return;
+  }
+  r.status = "paying"; render3();
+  const http = await x402Client();
+  const url = API("/v1/orders");
+  const init = { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ quoteId: r.quoteId }) };
+  let res = await fetch(url, init);
+  if (res.status === 402) {
+    const required = http.getPaymentRequiredResponse((n) => res.headers.get(n), await res.json().catch(() => undefined));
+    const payload = await http.createPaymentPayload(required);
+    res = await fetch(url, { ...init, headers: { ...init.headers, ...http.encodePaymentSignatureHeader(payload) } });
+  }
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(j.error || "payment refused (" + res.status + ")");
+  r.orderId = j.orderId;
+  r.status = "polling"; render3();
+  for (let i = 0; i < 60; i++) {
+    await sleep(2500);
+    const o = await (await fetch(API("/v1/orders/" + r.orderId))).json();
+    r.status = o.status; r.settlement = o.settlement_txid; r.receipt = o.receipt;
+    render3();
+    if (o.terminal) return;
+  }
+  throw new Error("still pending after 2 minutes — check /v1/orders/" + r.orderId);
+}
+
+const render3 = () => renderTable("t3", S3COLS, S.rows.filter((r) => r.quoteId), s3cell);
+
+async function payAll() {
+  const queue = S.rows.filter((r) => r.status === "quoted");
+  let done = 0;
+  figs("figs3", [{ label: "Payments", value: "0 / " + queue.length }, { label: "Settled", value: usd(0) }, { label: "Wallet", value: short(S.payer) || "demo" }]);
+  render3();
+  for (const r of queue) {
+    try { await payRow(r); } catch (e) { r.status = "error"; r.error = String(e.message || e); }
+    done++;
+    $("pbar").style.width = Math.round((done / queue.length) * 100) + "%";
+    const settled = S.rows.filter((x) => x.settlement).reduce((a, x) => a + Number(x.price), 0);
+    figs("figs3", [{ label: "Payments", value: done + " / " + queue.length }, { label: "Settled", value: usd(settled) }, { label: "Wallet", value: short(S.payer) || "demo" }]);
+    render3();
+  }
+  $("payhint").textContent = "Done.";
+  $("to4").classList.remove("hide");
+}
+
+// ── step 4 ─────────────────────────────────────────────────────────────────
+const S4COLS = [{ key: "who", label: "Recipient" }, { key: "price", label: "USDC", num: true }, { key: "status", label: "Outcome" }, { key: "order", label: "Order" }, { key: "tx", label: "Settlement" }];
+function s4cell(r, c) {
+  if (c.key === "order") return el("td", { class: "mono", style: "font-size:.76rem;color:var(--ink-soft)" }, r.orderId || "—");
+  return s3cell(r, c);
+}
+function showReceipts() {
+  const paid = S.rows.filter((r) => r.orderId || r.error);
+  const delivered = paid.filter((r) => r.status === "delivered");
+  const refunded = paid.filter((r) => r.status === "refunded");
+  const failed = paid.filter((r) => r.status === "error" || r.status === "failed" || r.status === "refund_failed");
+  figs("figs4", [
+    { label: "Delivered", value: delivered.length, sub: usd(delivered.reduce((a, r) => a + Number(r.price), 0)) },
+    { label: "Refunded", value: refunded.length, sub: refunded.length ? "returned on-chain" : "none", tone: refunded.length ? "warn" : "" },
+    { label: "Failed", value: failed.length, sub: failed.length ? "nothing was charged" : "none", tone: failed.length ? "bad" : "" },
+    { label: "Total settled", value: usd(paid.filter((r) => r.settlement).reduce((a, r) => a + Number(r.price), 0)) },
+  ]);
+  renderTable("t4", S4COLS, paid, s4cell);
+  goto(4);
+}
+
+function downloadCsv() {
+  const head = ["recipient", "amount_usdc", "status", "order_id", "settlement_txid"];
+  // A recipient name is untrusted text and this file gets opened in Excel. Quoting is
+  // not enough: a cell starting = + - @ is evaluated as a formula whether quoted or not.
+  const cell = (v) => {
+    const t = String(v);
+    return '"' + (/^[=+\-@\t\r]/.test(t) ? "'" + t : t).replace(/"/g, '""') + '"';
+  };
+  const lines = [head.join(",")].concat(S.rows.filter((r) => r.orderId || r.error).map((r) =>
+    [r.label, r.price || "", r.status, r.orderId || "", r.settlement || ""].map(cell).join(",")));
+  const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+  const a = el("a", { href: URL.createObjectURL(blob), download: "iomarkets-receipts.csv" });
+  document.body.append(a); a.click(); a.remove();
+}
+
+// ── wiring ─────────────────────────────────────────────────────────────────
+$("connect").addEventListener("click", connect);
+const TYPE_BUTTONS = [["t-payout", "payout"], ["t-topup", "topup"], ["t-esim", "esim"]];
+const HEADINGS = { payout: "Who are you paying?", topup: "Who are you topping up?", esim: "Which eSIMs do you need?" };
+// "Corridor" and "Recipients" are money-transfer words. An eSIM has neither.
+const OFFER_LABELS = { payout: "Corridor", topup: "Operator & bundle", esim: "Package" };
+const CSV_LABELS = {
+  payout: "Recipients — paste rows, one per line",
+  topup: "Recipients — paste rows, one per line",
+  esim: "eSIMs — one per line, labelled however you like",
+};
+function applyType(type) {
+  if (S.type !== type) {
+    // Rows describe recipients for ONE product. Carrying bank rows into an eSIM batch
+    // silently reinterpreted "Adebayo Okonkwo,0123456789,044" as an eSIM label —
+    // found by walking the flow rather than by reading it.
+    $("csv").value = "";
+    S.rows = [];
+    S.offer = null;
+  }
+  S.type = type;
+  for (const [id, t] of TYPE_BUTTONS) $(id).setAttribute("aria-pressed", String(t === type));
+  // A sender is a fact about a money transfer; an eSIM has neither sender nor recipient.
+  $("senderrow").classList.toggle("hide", type !== "payout");
+  // Fixed-price packages price themselves — asking "amount each" would invite a number
+  // that changes nothing, which is worse than not asking.
+  $("amountfield").classList.toggle("hide", type === "esim");
+  $("s1h").textContent = HEADINGS[type];
+  $("offerlabel").textContent = OFFER_LABELS[type];
+  $("csvlabel").textContent = CSV_LABELS[type];
+}
+for (const [id, type] of TYPE_BUTTONS) {
+  $(id).addEventListener("click", async () => {
+    applyType(type);
+    fillCountries(await liveCountries(type)); await loadOffers();
+  });
+}
+$("country").addEventListener("change", async (e) => { S.country = e.target.value; await loadOffers(); });
+$("offer").addEventListener("change", (e) => { S.offer = S.offers.find((o) => o.offerId === e.target.value) || null; updateColumns(); });
+$("amount").addEventListener("input", parseRows);
+$("sname").addEventListener("input", parseRows);
+$("scountry").addEventListener("input", parseRows);
+$("csv").addEventListener("input", parseRows);
+$("sample").addEventListener("click", () => {
+  $("csv").value = IS_ESIM() ? DEMO_ESIM_ROWS : DEMO_ROWS;
+  if (!IS_ESIM()) $("amount").value = $("amount").value || 50;
+  parseRows();
+});
+$("template").addEventListener("click", () => {
+  const blob = new Blob([columnsFor().join(",") + ",amount\n"], { type: "text/csv" });
+  const a = el("a", { href: URL.createObjectURL(blob), download: "recipients-template.csv" });
+  document.body.append(a); a.click(); a.remove();
+});
+$("file").addEventListener("change", async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  const text = await f.text();
+  // Drop a header line if the file has one — every column we expect is a known name.
+  const lines = text.split(/\r?\n/);
+  if (lines[0] && columnsFor().some((c) => lines[0].toLowerCase().includes(c))) lines.shift();
+  $("csv").value = lines.join("\n").trim();
+  parseRows();
+});
+$("to2").addEventListener("click", async () => { goto(2); updateTotals(); renderTable("t2", s2cols(), S.rows, s2cell); await quoteAll(); });
+$("back1").addEventListener("click", () => goto(1));
+$("to3").addEventListener("click", async () => { goto(3); await payAll(); });
+$("to4").addEventListener("click", showReceipts);
+$("dlcsv").addEventListener("click", downloadCsv);
+$("restart").addEventListener("click", () => { S.rows = []; $("csv").value = ""; parseRows(); $("qbar").style.width = "0"; $("pbar").style.width = "0"; $("to4").classList.add("hide"); goto(1); });
+
+(async function init() {
+  $("netchip").textContent = CFG.network.replace("algorand:", "algorand ");
+  if (CFG.demo) {
+    $("demobanner").classList.remove("hide");
+    $("connect").textContent = "Open the live console";
+    S.limits = { tier: "business", max_order_usdc: "500.00", max_payout_usdc: "2000.00", daily_usdc: "10000.00" };
+    $("wmeta").classList.remove("hide");
+    $("waddr").textContent = "DEMO…WALLET";
+    $("wtier").textContent = "business"; $("wtier").className = "tier business";
+    $("wremain").textContent = "up to " + usd(2000) + " per payment";
+  }
+  $("amount").value = 50;
+  try {
+    const saved = JSON.parse(localStorage.getItem("iom.sender") || "null");
+    if (saved) { $("sname").value = saved.name; $("scountry").value = saved.country; }
+  } catch { /* private window, or nothing saved */ }
+  if (CFG.demo && !$("sname").value) { $("sname").value = "Acme Payments Ltd"; $("scountry").value = "GB"; }
+  // The markup is authored for the payout flow — its heading, its "Corridor" label and
+  // its sender fields are in the HTML. Everything else is applied by applyType() on a
+  // tab click, which is fine while the page opens on payouts and wrong the moment it
+  // does not: the live console opened on airtime and still asked "Who are you paying?"
+  // over a sender name field. Reconcile at boot with the same function a click uses.
+  applyType(S.type);
+  fillCountries(await liveCountries(S.type));
+  await loadOffers();
+  if (CFG.demo) { $("csv").value = IS_ESIM() ? DEMO_ESIM_ROWS : DEMO_ROWS; }
+  parseRows();
+  // Offer only what the service can actually fill. A product whose supplier is not
+  // wired returns an empty catalogue, and a tab that leads to "No packages here yet"
+  // is a dead end dressed as a choice — the same reason /agent.md and the Bazaar
+  // description render their product list from the live set rather than a wish list.
+  if (!CFG.demo) hideUnsellableProducts();
+})();
+
+async function hideUnsellableProducts() {
+  // The server knows this — it computes the live product set from the wired suppliers —
+  // so when it has told us, believe it and skip three catalogue calls on every page
+  // load. It is also strictly better than the probe below: a payout tab could not be
+  // hidden by probing, because one empty country proves nothing about a corridor list.
+  if (SELLABLE) {
+    for (const [id, type] of TYPE_BUTTONS) if (!SELLABLE.includes(type)) $(id).classList.add("hide");
+    return;
+  }
+  await Promise.all(TYPE_BUTTONS.map(async ([id, type]) => {
+    if (type === S.type) return; // the one on screen already loaded its own catalogue
+    try {
+      // This only asks "is there anything at all", so one offer is the whole answer.
+      const r = await fetch(API("/v1/catalog?limit=1&type=" + type + "&country=" + (COUNTRIES[type][0] || [""])[0]));
+      const empty = !((await r.json()).offers || []).length;
+      // Payout corridors are per country, so an empty first country proves nothing.
+      if (empty && type !== "payout") $(id).classList.add("hide");
+    } catch { /* leave the tab up rather than hide a product over a network blip */ }
+  }));
+}
+</script>

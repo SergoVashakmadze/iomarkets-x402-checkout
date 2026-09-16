@@ -1,0 +1,282 @@
+<title>Check a receipt · IoMarkets</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=IBM+Plex+Sans:wght@400;450;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Same tokens as the console (src/console.html) — one house, two rooms. */
+:root{
+  --paper:#F6F5F2; --card:#FFFFFF; --sunk:#F1EFEB;
+  --ink:#1B1917; --ink-soft:#57514C; --ink-faint:#8A827B;
+  --rule:#E2DDD6; --rule-soft:#EFEBE5;
+  --accent:#8C2F39; --accent-soft:#F6EBEC; --accent-ink:#8C2F39;
+  --ok:#1F6B4A; --ok-soft:#E6F0E9;
+  --warn:#8A6A1F; --warn-soft:#F4EEDD;
+  --bad:#A3352B; --bad-soft:#F8EAE8;
+  --focus:#8C2F39;
+  --display:"Newsreader",Georgia,serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --r:8px; --shadow:0 1px 2px rgba(27,25,23,.05),0 8px 24px -16px rgba(27,25,23,.25);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#141210; --card:#1D1A17; --sunk:#232019;
+  --ink:#EFEAE2; --ink-soft:#B4ABA0; --ink-faint:#867D72;
+  --rule:#332E27; --rule-soft:#282420;
+  --accent:#D98089; --accent-soft:#2C1A1D; --accent-ink:#E39AA1;
+  --ok:#6FC397; --ok-soft:#15281F;
+  --warn:#D7B45F; --warn-soft:#2A2314;
+  --bad:#E38D82; --bad-soft:#2E1A17;
+  --focus:#D98089;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --paper:#141210; --card:#1D1A17; --sunk:#232019;
+  --ink:#EFEAE2; --ink-soft:#B4ABA0; --ink-faint:#867D72;
+  --rule:#332E27; --rule-soft:#282420;
+  --accent:#D98089; --accent-soft:#2C1A1D; --accent-ink:#E39AA1;
+  --ok:#6FC397; --ok-soft:#15281F;
+  --warn:#D7B45F; --warn-soft:#2A2314;
+  --bad:#E38D82; --bad-soft:#2E1A17;
+  --focus:#D98089;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -16px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent-ink)}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+.bar{border-bottom:1px solid var(--rule);background:var(--card)}
+.bar-in{max-width:900px;margin:0 auto;padding:.7rem 1.25rem;display:flex;align-items:center;gap:.85rem}
+.brand{font-family:var(--display);font-size:1.22rem;font-weight:600;letter-spacing:-.01em}
+.brand em{font-style:normal;color:var(--accent)}
+.chip{font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;padding:.2rem .45rem;border-radius:3px;border:1px solid var(--rule);color:var(--ink-faint);white-space:nowrap}
+.spacer{flex:1}
+.bar a{font-size:.85rem;text-decoration:none}
+.bar a:hover{text-decoration:underline}
+
+main{max-width:900px;margin:0 auto;padding:1.75rem 1.25rem 5rem;display:flex;flex-direction:column;gap:1.4rem}
+.lede{color:var(--ink-soft);max-width:62ch}
+h1{font-family:var(--display);font-size:1.9rem;line-height:1.15;font-weight:600}
+
+.card{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow)}
+.card-h{display:flex;align-items:baseline;gap:.7rem;padding:.85rem 1.05rem;border-bottom:1px solid var(--rule-soft);flex-wrap:wrap}
+.card-h h2{font-family:var(--display);font-size:1.05rem;font-weight:600}
+.card-h .sub{font-size:.83rem;color:var(--ink-faint)}
+.card-b{padding:1.05rem;display:flex;flex-direction:column;gap:.8rem}
+
+textarea{width:100%;min-height:11rem;padding:.7rem .8rem;border:1px solid var(--rule);border-radius:var(--r);background:var(--sunk);font-family:var(--mono);font-size:.78rem;line-height:1.5;resize:vertical}
+input[type=text]{padding:.5rem .7rem;border:1px solid var(--rule);border-radius:var(--r);background:var(--sunk);font-family:var(--mono);font-size:.82rem;min-width:16rem;flex:1}
+label{font-family:var(--mono);font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint)}
+.row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem .9rem;border-radius:var(--r);border:1px solid var(--rule);background:var(--card);cursor:pointer;font-weight:500;font-size:.88rem}
+.btn:hover:not(:disabled){border-color:var(--ink-faint)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#1B1917}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.primary{color:#1B1917}}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--ink-soft)}
+.btn.ghost:hover{background:var(--sunk);border-color:var(--rule)}
+
+/* ── the verdict, and the checks under it ─────────────── */
+.verdict{display:flex;align-items:center;gap:.8rem;padding:.9rem 1.05rem;border-bottom:1px solid var(--rule-soft);flex-wrap:wrap}
+.stamp{font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;padding:.28rem .6rem;border-radius:3px;border:1px solid currentColor}
+.stamp.ok{color:var(--ok);background:var(--ok-soft)}
+.stamp.bad{color:var(--bad);background:var(--bad-soft)}
+.stamp.unk{color:var(--warn);background:var(--warn-soft)}
+.verdict .what{font-size:.9rem;color:var(--ink-soft)}
+
+.checks{list-style:none;margin:0;padding:0}
+.checks li{display:grid;grid-template-columns:1.6rem 1fr;gap:.75rem;padding:.75rem 1.05rem;border-bottom:1px solid var(--rule-soft)}
+.checks li:last-child{border-bottom:none}
+.checks .mark{font-size:1rem;line-height:1.4}
+.checks .name{font-weight:500}
+.checks .detail{font-size:.85rem;color:var(--ink-soft);word-break:break-word}
+.checks .detail .mono{font-size:.78rem}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:1px;background:var(--rule-soft)}
+.facts div{background:var(--card);padding:.75rem 1.05rem}
+.facts dt{font-family:var(--mono);font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint)}
+.facts dd{margin:.15rem 0 0;font-size:.9rem;word-break:break-all}
+
+.note{padding:.75rem 1.05rem;font-size:.85rem;color:var(--ink-soft);border-top:1px solid var(--rule-soft);background:var(--sunk)}
+.hide{display:none}
+.err{color:var(--bad)}
+footer{max-width:900px;margin:0 auto;padding:0 1.25rem 3rem;font-size:.83rem;color:var(--ink-faint);display:flex;gap:1.2rem;flex-wrap:wrap}
+</style>
+
+<header class="bar">
+  <div class="bar-in">
+    <span class="brand">IoMarkets<em>.</em></span>
+    <span class="chip" id="net">mainnet</span>
+    <span class="spacer"></span>
+    <a href="/receipts.md">The format</a>
+    <a href="/agent.md">API</a>
+  </div>
+</header>
+
+<main>
+  <div style="display:flex;flex-direction:column;gap:.6rem">
+    <h1>Check a receipt.</h1>
+    <p class="lede">
+      Every delivered or refunded order here is signed, and names the transactions that paid for it.
+      Paste one below and this page checks the signature and looks both transactions up on Algorand.
+      It works on receipts from <strong>any</strong> service using
+      <a href="/receipts.md">the same format</a> — it verifies against the key named in the receipt,
+      not ours.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>The receipt</h2><span class="sub">JSON — the whole order response works too</span></div>
+    <div class="card-b">
+      <label for="doc">Paste it here</label>
+      <textarea id="doc" spellcheck="false" placeholder='{"payload":{"v":1,"order_id":"ord_…","status":"delivered", …},"signature":"…"}'></textarea>
+      <div class="row">
+        <button class="btn primary" id="go">Check it</button>
+        <button class="btn ghost" id="clear">Clear</button>
+        <span class="spacer"></span>
+        <label for="oid" style="text-transform:none;letter-spacing:0;font-family:var(--sans);font-size:.85rem;color:var(--ink-faint)">or fetch one by order id</label>
+        <input type="text" id="oid" placeholder="ord_…" spellcheck="false">
+        <button class="btn" id="fetch">Fetch</button>
+      </div>
+      <p class="err hide" id="err"></p>
+    </div>
+  </div>
+
+  <!-- At rest this explains the checks rather than sitting empty; after a check it holds the result. -->
+  <div class="card" id="out">
+    <div class="card-h"><h2>What gets checked</h2><span class="sub">three questions, in this order</span></div>
+    <ul class="checks">
+      <li><span class="mark">1</span><span>
+        <span class="name">Is the signature real?</span>
+        <div class="detail">The receipt is signed over a fixed field order with ed25519. Change one character of the payload and this fails. Nothing else is worth checking until it passes.</div>
+      </span></li>
+      <li><span class="mark">2</span><span>
+        <span class="name">Whose key signed it?</span>
+        <div class="detail">Reported separately from validity, because a valid signature by a key you do not recognise is exactly that. Ours is published at <a href="/v1/pubkey">/v1/pubkey</a>.</div>
+      </span></li>
+      <li><span class="mark">3</span><span>
+        <span class="name">Did the money actually move?</span>
+        <div class="detail">Both transactions are looked up on Algorand: the amount, the asset, and the direction — the payment came <em>from</em> the payer, and a refund went back <em>to</em> them.</div>
+      </span></li>
+    </ul>
+    <div class="note">
+      A check can also come back <strong>unknown</strong> — an indexer that times out has told you nothing
+      about the payment, so it is never reported as a failure. Nor does it count as a pass.
+    </div>
+  </div>
+</main>
+
+<footer>
+  <a href="/receipts.md">Receipt format</a>
+  <a href="/v1/pubkey">Signing key</a>
+  <a href="/v1/ledger">Public ledger</a>
+  <span>Verification runs on this server; nothing you paste is stored.</span>
+</footer>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const MARK = { ok: "✓", failed: "✗", unknown: "?" };
+
+function fail(msg) {
+  $("err").textContent = msg;
+  $("err").classList.remove("hide");
+}
+function clearErr() { $("err").classList.add("hide"); $("err").textContent = ""; }
+
+/** One check row. `state` is ok | failed | unknown — never a boolean, on purpose. */
+function checkRow(name, state, detail) {
+  const colour = state === "ok" ? "var(--ok)" : state === "failed" ? "var(--bad)" : "var(--warn)";
+  return '<li><span class="mark" style="color:' + colour + '">' + MARK[state] + "</span><span>" +
+    '<span class="name">' + esc(name) + "</span>" +
+    '<div class="detail">' + detail + "</div></span></li>";
+}
+
+function render(r) {
+  const verdict = r.verified ? "ok" : r.signature === "failed" ? "bad" : "unk";
+  const word = r.verified ? "Verified" : r.signature === "failed" ? "Not valid" : "Not fully checked";
+  const what = r.verified
+    ? "The signature is genuine and every transaction it names is on chain, for the right amount, in the right direction."
+    : r.signature === "failed"
+      ? "The signature does not match the payload. Whoever produced this document, it was not signed as it stands."
+      : "The signature is genuine. Something else could not be confirmed — read the checks below.";
+
+  const rows = [
+    checkRow(
+      "Signature",
+      r.signature === "ok" ? "ok" : "failed",
+      r.signature === "ok" ? "Valid ed25519 signature over the canonical payload." : "Does not verify against the key named in the receipt.",
+    ),
+    checkRow(
+      "Signer",
+      r.signer_is === "this-server" ? "ok" : "unknown",
+      (r.signer_is === "this-server"
+        ? "This server's own published key. "
+        : "A key this server does not publish — a different seller, or a receipt that was never ours. ") +
+        '<span class="mono">' + esc(r.signer || "") + "</span>",
+    ),
+    checkRow("Settlement on chain", r.settlement.state, esc(r.settlement.detail) + '<br><span class="mono">' + esc(r.settlement.txid || "—") + "</span>"),
+  ];
+  if (r.refund) rows.push(checkRow("Refund on chain", r.refund.state, esc(r.refund.detail) + '<br><span class="mono">' + esc(r.refund.txid || "—") + "</span>"));
+
+  $("out").innerHTML =
+    '<div class="verdict"><span class="stamp ' + verdict + '">' + word + '</span><span class="what">' + what + "</span></div>" +
+    '<dl class="facts">' +
+      '<div><dt>Order</dt><dd class="mono">' + esc(r.order_id) + "</dd></div>" +
+      "<div><dt>Outcome</dt><dd>" + esc(r.status) + "</dd></div>" +
+      '<div><dt>Amount</dt><dd class="mono">' + esc(r.amount_usdc) + " USDC</dd></div>" +
+    "</dl>" +
+    '<ul class="checks">' + rows.join("") + "</ul>" +
+    (r.notes && r.notes.length ? '<div class="note">' + r.notes.map(esc).join("<br>") + "</div>" : "") +
+    '<div class="note">Checked against <span class="mono">' + esc(r.indexer || "no indexer") + '</span>. ' +
+      'Do it yourself: <span class="mono">POST /v1/verify</span>, or <span class="mono">pnpm verify &lt;file&gt; --online</span>.</div>';
+  $("out").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+async function check(body) {
+  clearErr();
+  $("go").disabled = true;
+  $("go").textContent = "Checking…";
+  try {
+    const res = await fetch("/v1/verify", { method: "POST", headers: { "content-type": "application/json" }, body });
+    const json = await res.json();
+    if (!res.ok) { fail(json.error || "That did not look like a receipt."); return; }
+    render(json);
+  } catch (e) {
+    fail("Could not reach the verifier: " + e.message);
+  } finally {
+    $("go").disabled = false;
+    $("go").textContent = "Check it";
+  }
+}
+
+$("go").addEventListener("click", () => {
+  const raw = $("doc").value.trim();
+  if (!raw) return fail("Paste a receipt first — the whole order response works too.");
+  // Parse here so a typo is a plain sentence rather than a 400 from the server.
+  try { JSON.parse(raw); } catch (e) { return fail("That is not valid JSON: " + e.message); }
+  check(raw);
+});
+
+$("clear").addEventListener("click", () => { $("doc").value = ""; clearErr(); location.reload(); });
+
+$("fetch").addEventListener("click", async () => {
+  const id = $("oid").value.trim();
+  if (!id) return fail("Enter the order id you were given when you paid.");
+  clearErr();
+  try {
+    const res = await fetch("/v1/orders/" + encodeURIComponent(id));
+    const order = await res.json();
+    if (!res.ok) return fail(order.error || "No such order.");
+    if (!order.receipt) return fail("That order has no receipt yet — it is " + (order.status || "not finished") + ". Receipts are issued once an order is delivered or refunded.");
+    $("doc").value = JSON.stringify(order.receipt, null, 2);
+    check(JSON.stringify(order.receipt));
+  } catch (e) {
+    fail("Could not fetch that order: " + e.message);
+  }
+});
+</script>
