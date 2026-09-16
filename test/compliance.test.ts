@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { checkPayout } from "../src/compliance.js";
+import { blockedCountryList, offerTouchesBlocked } from "../src/sanctions.js";
 
 const base = { country: "NG", priceMicro: 50_000_000, payerPayoutsTodayMicro: 0, sender: { name: "S", country: "GE" }, blockedCountries: ["IR", "KP"], maxUsd: 200, kycAboveUsd: 100 };
 
@@ -30,5 +31,20 @@ describe("payout compliance", () => {
     const r = { ...base, recipientDailyMaxUsd: 500, recipientPayoutsTodayMicro: 0 };
     expect(checkPayout(r)).toEqual({ ok: true });
     expect(checkPayout({ ...r, recipientPayoutsTodayMicro: 480_000_000 })).toMatchObject({ ok: false, status: 403 });
+  });
+});
+
+describe("sanctions floor", () => {
+  it("env can add countries but never drop the sanctioned ones", () => {
+    const list = blockedCountryList("");
+    for (const c of ["RU", "BY", "IR", "KP", "SY", "CU", "VE", "MM"]) expect(list).toContain(c);
+    expect(blockedCountryList("xx, ru")).toContain("XX");
+    expect(blockedCountryList("GE")).toContain("RU");
+  });
+  it("blocks a regional bundle that covers a sanctioned country", () => {
+    const blocked = blockedCountryList("");
+    expect(offerTouchesBlocked({ country: "WW", regions: ["GH", "SD"] }, blocked)).toBe(true);
+    expect(offerTouchesBlocked({ country: "WW", regions: ["DE", "FR"] }, blocked)).toBe(false);
+    expect(offerTouchesBlocked({ country: "ru" }, blocked)).toBe(true);
   });
 });

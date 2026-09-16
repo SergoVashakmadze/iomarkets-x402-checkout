@@ -13,6 +13,7 @@ import { randomUUID } from "node:crypto";
 import type { Db, OrderRow } from "./db.js";
 import { floorInflatesPrice, formatUsdc, minSellableCostMicro, pricingFor, sellPriceMicro, toMicro, type PricingParams } from "./money.js";
 import { checkPayout } from "./compliance.js";
+import { offerTouchesBlocked } from "./sanctions.js";
 import { ceilingMicro, limitsFor, usd, type Limits } from "./accounts.js";
 import { hashRecipient, recipientPepper, signReceipt } from "./receipt.js";
 import type { Refunder } from "./refunds.js";
@@ -226,7 +227,7 @@ export class OrderService {
     this.maybePruneQuotes();
     const offer = await this.supplier.getOffer(input.type, input.offerId);
     if (!offer) throw new QuoteError("unknown offer", 404);
-    if (this.opts.blockedCountries.includes(offer.country)) throw new QuoteError("destination not supported", 403);
+    if (offerTouchesBlocked(offer, this.opts.blockedCountries)) throw new QuoteError("destination not supported", 403);
 
     const recipient: QuoteInput["recipient"] & { sender?: QuoteInput["sender"]; sender_account?: string } = {};
     if (input.type === "topup") {

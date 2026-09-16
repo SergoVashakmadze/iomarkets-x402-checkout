@@ -1,6 +1,7 @@
 // Central config. Every knob is an env var; nothing secret is ever defaulted.
 import "dotenv/config";
 import { loadSecret } from "./keys.js";
+import { blockedCountryList } from "./sanctions.js";
 
 const opt = (name: string, fallback: string): string => process.env[name] ?? fallback;
 const num = (name: string, fallback: number): number => {
@@ -242,7 +243,8 @@ export const config = {
     payerDailyUsd: num("PAYER_DAILY_USD", 200),
     quoteTtlSec: num("QUOTE_TTL_SEC", 600),
     freeRoutePerMinute: num("FREE_ROUTE_PER_MINUTE", 60),
-    blockedCountries: opt("BLOCKED_COUNTRIES", "CU,IR,KP,SY,RU,BY").split(",").map((s) => s.trim().toUpperCase()).filter(Boolean),
+    // ⛔ src/sanctions.ts is a floor this can only add to. Do not weaken it (see that file).
+    blockedCountries: blockedCountryList(opt("BLOCKED_COUNTRIES", "")),
   },
 
   // Refund hot wallet: a SEPARATE account holding a small USDC float. Its spend

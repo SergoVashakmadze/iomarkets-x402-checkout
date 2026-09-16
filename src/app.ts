@@ -43,6 +43,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { registerTools } from "./mcp-tools.js";
 import { mountGrowth } from "./growth.js";
+import { offerTouchesBlocked } from "./sanctions.js";
 import { ALGORAND_ADDRESS, type ReferralService } from "./referrals.js";
 
 const P = config.apiPrefix;
@@ -562,7 +563,7 @@ export function buildApp(deps: AppDeps): Hono<Env> {
       .map(([brand, brandName]) => ({ brand, brandName }));
     return c.json({
       phone: `+${msisdn}`, country: l.country, brand: l.brand, brandName: l.brandName,
-      offers: offers.map(offerView),
+      offers: offers.filter((o) => !offerTouchesBlocked(o, config.limits.blockedCountries)).map(offerView),
       operator_detection: "auto",
       confirm_operator:
         "The operator was detected from the number range and is a guess. MVNOs (Tesco Mobile, Giff Gaff, Lebara, Voxi, Sky…) are detected as the host network they ride on. CONFIRM the brand with the human before buying — a voucher for the wrong network delivers successfully and cannot be redeemed or refunded.",
@@ -630,7 +631,7 @@ export function buildApp(deps: AppDeps): Hono<Env> {
     // Filtering happens after the supplier call, so ask for everything and page here:
     // a limit applied before the filters would return short pages of a shorter list.
     const offers = (await supplier.listOffers({ type, country, brand: c.req.query("brand") }))
-      .filter((o) => !config.limits.blockedCountries.includes(o.country))
+      .filter((o) => !offerTouchesBlocked(o, config.limits.blockedCountries))
       // A FIXED offer the floor would price is unsellable at any amount — quote()
       // refuses it, so listing it advertises something no one can buy. A RANGE offer
       // stays: the buyer picks the amount, and quote() tells them the minimum.
