@@ -167,3 +167,15 @@ describe("the landing page says what this is, and carries the brand", () => {
     }
   });
 });
+
+describe("landing: simulate this purchase", () => {
+  // Clicking an offer set `sel` and THEN called reset(), which nulls it — so the button
+  // was enabled and did nothing, on the live page, until 2026-09-16. Found by recording
+  // the demo video, not by any test.
+  it("selects the offer after resetting, not before", async () => {
+    const { landingHtml } = await import("../src/landing.js");
+    const html = landingHtml({ base: "http://x", network: "mainnet", pubkey: "", brand: "B", site: "http://x" });
+    expect(html).not.toContain("sel=o;reset()");
+    expect(html).toContain("reset();sel=o;run.disabled=false");
+  });
+});

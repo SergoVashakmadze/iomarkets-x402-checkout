@@ -591,8 +591,11 @@ export function BatchProvider({ children, demo }: { children: ReactNode; demo: b
     connecting,
     connect,
     disconnect,
-    setType: (t) => setState((s) => ({ ...s, type: t, offerId: null })),
-    setCountry: (c) => setState((s) => ({ ...s, country: c, offerId: null })),
+    // Re-picking the current value must not clear the corridor: nothing else changes, so
+    // the offers effect never re-runs to choose one again, and the page sticks on
+    // "Choose a corridor" while the dropdown still shows one.
+    setType: (t) => setState((s) => (s.type === t ? s : { ...s, type: t, offerId: null })),
+    setCountry: (c) => setState((s) => (s.country === c ? s : { ...s, country: c, offerId: null })),
     setOffer: (id) => setState((s) => ({ ...s, offerId: id })),
     setRows,
     patchRow,

@@ -654,7 +654,7 @@ function offers(url){$('offers').innerHTML='<p class="muted small">Loading…</p
   list.slice(0,12).forEach(function(o){var b=document.createElement('button');b.className='offer';b.setAttribute('aria-pressed','false');
    var n=document.createElement('span');n.className='n';n.textContent=o.name;var d=document.createElement('span');d.className='d';d.textContent=(o.brandName?o.brandName+' · ':'')+deliver(o);
    var p=document.createElement('span');p.className='p';p.textContent=(o.priceType==='range'?'from ':'')+Number(o.price_usdc_from).toFixed(2);var sm=document.createElement('small');sm.textContent='USDC';p.appendChild(sm);
-   b.appendChild(n);b.appendChild(p);b.appendChild(d);b.onclick=function(){var all=box.querySelectorAll('.offer');for(var i=0;i<all.length;i++)all[i].setAttribute('aria-pressed','false');b.setAttribute('aria-pressed','true');sel=o;reset();run.disabled=false;};box.appendChild(b);});
+   b.appendChild(n);b.appendChild(p);b.appendChild(d);b.onclick=function(){var all=box.querySelectorAll('.offer');for(var i=0;i<all.length;i++)all[i].setAttribute('aria-pressed','false');b.setAttribute('aria-pressed','true');reset();sel=o;run.disabled=false;};box.appendChild(b);});
  }).catch(function(e){$('offers').innerHTML='<p class="err">'+(String(e.message)==='429'?'Slow down — the free routes are rate limited. Try again in a minute.':'Could not load offers ('+e.message+').')+'</p>'});}
 function reset(){sel=null;run.disabled=true;run.textContent='Simulate this purchase';var st=$('steps').children;for(var i=0;i<st.length;i++){st[i].className='step';st[i].querySelector('pre').textContent='';}}
 function rnd(n){var a='ABCDEFGHIJKLMNOPQRSTUVWXYZ234567',s='';for(var i=0;i<n;i++)s+=a[Math.floor(Math.random()*32)];return s;}

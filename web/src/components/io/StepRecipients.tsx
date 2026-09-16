@@ -17,6 +17,8 @@ import { countryName, fieldLabel, type Row } from "@/lib/io/types";
 import { guessMapping, looksLikeHeader, parseDelimited } from "@/lib/io/csv";
 import { usdc } from "@/lib/io/format";
 import { DEMO_ROWS } from "@/lib/io/driver";
+import { getCountries } from "@/lib/io/api";
+import type { Country } from "@/lib/io/types";
 
 const SENDER_COUNTRIES = [
   { code: "GB", name: "United Kingdom" },
@@ -63,7 +65,27 @@ export function StepRecipients() {
   } = useBatch();
 
   const [dragging, setDragging] = useState(false);
+  // Bank & mobile money has only the sample corridors until a payout partner is wired.
+  // The rest of the footprint is listed, greyed out, so the picker matches the 150+
+  // countries the product reaches rather than looking like a five-country service.
+  const [notYet, setNotYet] = useState<Country[]>([]);
   const [onlyProblems, setOnlyProblems] = useState(false);
+  const payoutSamplesOnly = type === "payout" && countries.length <= 5;
+  useEffect(() => {
+    if (!payoutSamplesOnly || notYet.length) return;
+    let cancelled = false;
+    getCountries("topup")
+      .then((list) => {
+        if (!cancelled && list) setNotYet(list);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [payoutSamplesOnly, notYet.length]);
+  const notYetOpen = payoutSamplesOnly
+    ? notYet.filter((c) => !countries.some((s) => s.code === c.code))
+    : [];
   const [pending, setPending] = useState<PendingImport | null>(null);
   const [mapping, setMapping] = useState<Record<string, string>>({});
   const [flash, setFlash] = useState<string | null>(null);
@@ -275,11 +297,30 @@ export function StepRecipients() {
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
               >
-                {countries.map((c) => (
-                  <option key={c.code} value={c.code}>
-                    {c.name}
-                  </option>
-                ))}
+                {notYetOpen.length ? (
+                  <>
+                    <optgroup label="Sample corridors">
+                      {countries.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Not yet available — opens when a payout partner is connected">
+                      {notYetOpen.map((c) => (
+                        <option key={c.code} value={c.code} disabled>
+                          {c.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                  </>
+                ) : (
+                  countries.map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.name}
+                    </option>
+                  ))
+                )}
               </select>
             </Field>
             <Field label="Corridor" htmlFor="corridor">
@@ -305,7 +346,9 @@ export function StepRecipients() {
 
           {type === "payout" && (
             <p className="mx-4 mb-4 rounded-md bg-surface-2/60 px-3 py-2 text-[12.5px] text-muted-foreground">
-              {countries.length <= 5 ? `${countries.length} sample corridors. ` : ""}
+              {countries.length <= 5
+                ? `${countries.length} sample corridors${notYetOpen.length ? `; ${notYetOpen.length} more countries listed, not yet open` : ""}. `
+                : ""}
               Bank and mobile-money payouts open country by country as a licensed payout partner is
               connected. <b className="text-foreground">Airtime &amp; data</b> reaches 155 countries
               today, and travel eSIMs 200+.
