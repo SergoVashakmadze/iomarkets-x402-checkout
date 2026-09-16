@@ -1,8 +1,8 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "app.iomarkets/topup",
-  "description": "Travel eSIMs for 197 destinations and airtime top-ups in 150+ countries, paid in USDC via x402",
-  "version": "0.2.5",
+  "description": "Travel eSIMs in 200+ destinations and top-ups in 150+ countries, paid in USDC via x402",
+  "version": "0.2.7",
   "websiteUrl": "https://iomarkets.app",
   "remotes": [
     {
