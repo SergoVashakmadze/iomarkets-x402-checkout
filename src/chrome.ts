@@ -105,7 +105,7 @@ export function shell(o: ShellOpts): string {
 <meta name="twitter:title" content="${esc(o.title)}">
 <meta name="twitter:description" content="${esc(o.description)}">
 <meta name="twitter:image" content="${esc(o.base)}${BRAND_ASSETS.og}">
-${o.noindex ? '<meta name="robots" content="noindex">' : ""}
+${o.noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" href="${esc(o.base)}${esc(o.path)}">`}
 <meta name="theme-color" content="#0F2557">
 <link rel="icon" href="${BRAND_ASSETS.favicon}" type="image/png">
 <link rel="apple-touch-icon" href="${BRAND_ASSETS.touch}">

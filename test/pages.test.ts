@@ -179,3 +179,33 @@ describe("landing: simulate this purchase", () => {
     expect(html).toContain("reset();sel=o;run.disabled=false");
   });
 });
+
+// The 2026-09-18 SEO audit found no sitemap (robots.txt pointed "Sitemap:" at /agent.md),
+// no canonical on any page, and a `?query` variant of / served as an indexable clone.
+describe("what search engines read", () => {
+  const canonical = (html: string) => html.match(/<link rel="canonical" href="([^"]+)">/)?.[1];
+
+  it("every sitemap page declares itself canonical, ignoring the query string", async () => {
+    const app = build();
+    const xml = await (await app.request("/sitemap.xml")).text();
+    const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+    expect(locs.map((l) => new URL(l).pathname)).toEqual(["/", "/verify", "/fund", "/earn"]);
+    for (const loc of locs) {
+      const path = new URL(loc).pathname;
+      const res = await app.request(`${path}?utm_source=spam`);
+      expect(res.status, path).toBe(200);
+      expect(canonical(await res.text()), path).toBe(loc);
+    }
+  });
+
+  it("robots.txt names the AI crawlers, allows them, and points at the real sitemap", async () => {
+    const txt = await (await build().request("/robots.txt")).text();
+    for (const ua of ["Google-Extended", "GPTBot", "ClaudeBot"]) {
+      const group = txt.split(`User-agent: ${ua}\n`)[1]?.split("\n\n")[0] ?? "";
+      expect(group, ua).toContain("Allow: /");
+      expect(group, ua).toContain("Disallow: /pay");
+      expect(group, ua).not.toMatch(/^Disallow: \/$/m);
+    }
+    expect(txt).toMatch(/^Sitemap: \S+\/sitemap\.xml$/m);
+  });
+});

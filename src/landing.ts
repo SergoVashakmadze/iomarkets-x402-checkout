@@ -118,6 +118,7 @@ Base URL: ${f.base}
 export function fundHtml(f: PageFacts): string {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Fund your agent with USDC on Algorand — ${f.brand}</title>
+<link rel="canonical" href="${f.base}/fund">
 <style>body{margin:0;font:16px/1.55 system-ui,sans-serif;background:#0b0f14;color:#e8edf2}main{max-width:820px;margin:0 auto;padding:40px 20px}a{color:#39d98a}
 .card{background:#121923;border:1px solid #1f2a37;border-radius:12px;padding:16px;margin:12px 0}code{font-family:ui-monospace,monospace}</style></head><body><main>
 <h1>Fund your agent with USDC on Algorand</h1>
@@ -197,6 +198,7 @@ export function landingHtml(f: PageFacts): string {
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:image" content="${f.base}${BRAND_ASSETS.og}">
 <meta property="og:url" content="${f.base}/">
+<link rel="canonical" href="${f.base}/">
 <meta name="theme-color" content="#0F2557">
 <link rel="icon" href="${BRAND_ASSETS.favicon}" type="image/png">
 <link rel="apple-touch-icon" href="${BRAND_ASSETS.touch}">

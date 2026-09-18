@@ -402,7 +402,7 @@ export function buildApp(deps: AppDeps): Hono<Env> {
   }
 
   /** The verifier for people. Same endpoint underneath as the CLI and the MCP tool. */
-  app.get("/verify", (c) => c.html(verifyPageHtml()));
+  app.get("/verify", (c) => c.html(verifyPageHtml(base)));
   app.get("/fund", (c) => c.html(fundHtml(pageFacts)));
   app.get("/llms.txt", (c) => c.text(agentMd(pageFacts)));
 
@@ -414,17 +414,41 @@ export function buildApp(deps: AppDeps): Hono<Env> {
    * that is the whole distribution strategy. The operator console is not. Its URLs are
    * noise in an index and it sits behind a wallet connection anyway.
    */
-  app.get("/robots.txt", (c) => c.text([
-    "User-agent: *",
+  const crawlRules = [
     "Allow: /",
     "Disallow: /pay",
     "Disallow: /console",
     // Pay links carry a masked recipient and a note someone wrote for one person.
     "Disallow: /l/",
+  ];
+  /**
+   * AI crawlers are named and ALLOWED here, unlike the rest of the IoMarkets portfolio,
+   * which blocks them: agents finding this service is the distribution strategy. They
+   * are listed by name so the policy is explicit (and so the portfolio's SEO audit sees
+   * one). A named group replaces the `*` group for that crawler, so each one repeats
+   * the same rules; one group per agent is the portfolio's robots.txt convention.
+   */
+  const aiCrawlers = ["Google-Extended", "GPTBot", "OAI-SearchBot", "ChatGPT-User", "ClaudeBot", "Claude-User", "Claude-SearchBot", "PerplexityBot", "Perplexity-User"];
+  app.get("/robots.txt", (c) => c.text([
+    "User-agent: *",
+    ...crawlRules,
     "",
-    `Sitemap: ${base}/agent.md`,
+    ...aiCrawlers.flatMap((ua) => [`User-agent: ${ua}`, ...crawlRules, ""]),
+    `Sitemap: ${base}/sitemap.xml`,
+    // Not a sitemap, but the page an agent should read first.
+    `# Agent docs: ${base}/agent.md`,
     "",
   ].join("\n")));
+
+  /** The human-facing pages. Proof pages (/p/:txid) are per order and are not listed. */
+  const sitemapPaths = ["/", "/verify", "/fund", "/earn"];
+  app.get("/sitemap.xml", (c) => c.body([
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...sitemapPaths.map((p) => `  <url><loc>${base}${p}</loc></url>`),
+    "</urlset>",
+    "",
+  ].join("\n"), 200, { "content-type": "application/xml; charset=utf-8" }));
 
   // ── hosted MCP (Streamable HTTP) ────────────────────────────────────────────
   // Zero-install access for any MCP client: no clone, no local process, no key

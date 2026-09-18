@@ -12,8 +12,9 @@ import { page, readFragment } from "./html.js";
 
 const FRAGMENT = readFragment(new URL("./verify.html", import.meta.url));
 
-export function verifyPageHtml(): string {
+export function verifyPageHtml(base: string): string {
   return page(FRAGMENT, {
+    inject: `<link rel="canonical" href="${base}/verify">`,
     description:
       "Check a signed delivery receipt: the ed25519 signature, and both Algorand transactions it names. " +
       "Works on receipts from any service using the same format.",
