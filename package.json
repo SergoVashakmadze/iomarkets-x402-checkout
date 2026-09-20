@@ -37,24 +37,24 @@
     "account": "tsx scripts/account.ts"
   },
   "dependencies": {
-    "@hono/node-server": "^1.13.7",
+    "@hono/node-server": "^2.1.1",
     "@modelcontextprotocol/sdk": "^1.30.0",
-    "@noble/ed25519": "^2.1.0",
-    "@noble/hashes": "^1.6.1",
-    "@x402/avm": "^2.23.0",
-    "@x402/core": "^2.23.0",
-    "@x402/extensions": "^2.23.0",
-    "@x402/hono": "^2.23.0",
+    "@noble/ed25519": "^3.2.0",
+    "@noble/hashes": "^2.4.0",
+    "@x402/avm": "^2.25.0",
+    "@x402/core": "^2.25.0",
+    "@x402/extensions": "^2.25.0",
+    "@x402/hono": "^2.25.0",
     "algosdk": "^3.1.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.4.2",
     "hono": "^4.13.7",
-    "tsx": "^4.19.2",
-    "zod": "^4.0.0"
+    "tsx": "^4.23.13",
+    "zod": "^4.6.4"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
-    "typescript": "^5.7.2",
-    "vitest": "^4.1.11"
+    "@types/node": "^26.5.1",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
   },
   "_comment_pnpm_overrides": "qs arrives transitively (@modelcontextprotocol/sdk -> express -> body-parser). Two moderate advisories on 6.15.x: an array-limit bypass via bracket-key comma parsing, and a DoS via attacker-controlled isBuffer. Both are about parsing an attacker-supplied query string, and NOTHING here runs express — the MCP transport is WebStandardStreamableHTTP mounted in Hono, so express ships as dead weight and the vulnerable path is never reached. Pinned forward anyway: an unreachable vulnerability is still a vulnerability once someone wires a second transport, and a clean alert list is what makes the next alert legible.",
   "pnpm": {
