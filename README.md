@@ -31,6 +31,7 @@ agent ── GET /v1/orders/{id} ─▶ status, confirmation (operator ref / eSI
 | `GET /v1/orders/:id` | free | status, confirmation, signed receipt, refund txid |
 | `POST /v1/verify` | free | verify any receipt: signature + both txids on chain (`?online=0` for signature only) |
 | `GET /v1/ledger` · `GET /v1/pubkey` · `GET /agent.md` · `GET /fund` | free | public ledger · receipt key · agent instructions · how to get USDCa |
+| `GET /.well-known/agent-card.json` · `GET /.well-known/agent.json` | free | **A2A agent card** — what registries and agent routers read: the live skill list (rendered from what the suppliers can actually fill), the provider, and x402 declared as a required capability with the paid route named. Claims **no** transport and no `url`: this server does not speak A2A JSON-RPC, and neither `HTTP+JSON` nor a made-up `MCP` is an honest value for that field, so the card is discovery metadata and `documentationUrl` sends a caller to `/agent.md` for the interface that exists (`src/agent-card.ts`) |
 | `GET /v1/client-config` | free | network, CAIP-2 id, algod URL, USDC ASA and the order ceiling — what a browser needs to build a payment (public values only) |
 | `GET /pay` | free | **the batch payout console** — paste a spreadsheet, price every row, approve once, export receipts (`web/`, `?demo=1` for canned data) |
 | `GET /console` | free | the original single-file console — no build step, works when `web/dist` is absent |

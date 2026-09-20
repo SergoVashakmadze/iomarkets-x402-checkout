@@ -234,7 +234,7 @@ h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.
 h1{font-size:clamp(2.1rem,5vw,3.4rem);font-weight:700}h2{font-size:clamp(1.5rem,3vw,2.05rem);font-weight:600}h3{font-size:1.08rem;font-weight:600;letter-spacing:-.01em}
 p{margin:.5em 0}a{color:var(--cobalt-ink);text-decoration:none}a:hover{text-decoration:underline}
 button,input,select{font:inherit;color:inherit}:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px;border-radius:4px}
-code,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}code{font-size:.9em;background:var(--sunk);padding:.08em .38em;border-radius:4px}
+code,.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}code{font-size:.9em;background:var(--sunk);padding:.08em .38em;border-radius:4px;word-break:break-all}
 .wrap{max-width:1120px;margin:0 auto;padding:0 1.25rem}
 section{padding:4.5rem 0}section+section{border-top:1px solid var(--rule-soft)}
 .eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:500;margin-bottom:.9rem}

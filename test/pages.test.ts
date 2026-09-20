@@ -180,6 +180,35 @@ describe("landing: simulate this purchase", () => {
   });
 });
 
+// A phone found this, not a test: the page scrolled sideways and left a strip of empty
+// paper down the right edge. The cause was one <code> in the footer holding the 58-char
+// payTo address — an unbreakable 384px token on a 378px viewport, which widens the whole
+// document because nothing above it is a scroll container. Every OTHER long thing on the
+// page is already contained (pre.code and the ledger's div.tw both scroll on their own),
+// so this was the single escapee. src/chrome.ts has carried the break rule since the
+// growth pages shipped; src/landing.ts never got it.
+describe("the landing page fits a phone", () => {
+  it("lets an unbreakable token wrap instead of widening the document", async () => {
+    const html = await (await build().request("/")).text();
+    const rule = html.match(/code\{[^}]*\}/)?.[0] ?? "";
+    expect(rule, "landing <code> needs a break rule").toMatch(/word-break:break-all|overflow-wrap:anywhere/);
+  });
+
+  it("still renders the address that caused it", async () => {
+    // If the footer stops printing payTo the rule above is untested rather than wrong,
+    // so pin the thing it protects. Rendered directly with an explicit payTo rather
+    // than through build(): config.payTo comes from PAY_TO in the environment, so going
+    // through the app made this pass only on a machine with a populated .env and fail
+    // on a clean checkout. Caught by the public repo, which has no .env.
+    const { landingHtml } = await import("../src/landing.js");
+    const html = landingHtml({
+      base: "http://x", network: "mainnet", pubkey: "", brand: "B", site: "http://x",
+      payTo: "FVEJDCQFCHVG4Y6M2JVAD4L447E2R2OHJKT5APXV7AZI7XXOQU6RUVSKCA",
+    });
+    expect(html).toMatch(/payTo <code>/);
+  });
+});
+
 // The 2026-09-18 SEO audit found no sitemap (robots.txt pointed "Sitemap:" at /agent.md),
 // no canonical on any page, and a `?query` variant of / served as an indexable clone.
 describe("what search engines read", () => {

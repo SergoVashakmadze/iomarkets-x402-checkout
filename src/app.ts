@@ -35,6 +35,7 @@ import { normalizeMsisdn } from "./phone.js";
 import type { ProductType, Supplier, SupplierCountry } from "./suppliers/types.js";
 import { SupplierError } from "./suppliers/types.js";
 import { landingHtml, agentMd, fundHtml, productList } from "./landing.js";
+import { agentCard } from "./agent-card.js";
 import { consoleHtml } from "./console.js";
 import { verifyPageHtml } from "./verify-page.js";
 import { mountPayConsole } from "./pay-console.js";
@@ -368,6 +369,18 @@ export function buildApp(deps: AppDeps): Hono<Env> {
   app.get("/agent.md", (c) => c.text(agentMd(pageFacts)));
 
   /**
+   * The A2A agent card. Two paths on purpose: `agent-card.json` is what the current
+   * spec names, `agent.json` is what the crawlers and directories written against the
+   * earlier draft still request, and a 404 on the path a router actually asks for is
+   * the same as not publishing one. See src/agent-card.ts for what the card does and
+   * does not claim about transport.
+   */
+  const cardJson = () => agentCard({ ...pageFacts, payTo: config.payTo });
+  for (const path of ["/.well-known/agent-card.json", "/.well-known/agent.json"]) {
+    app.get(path, (c) => c.json(cardJson()));
+  }
+
+  /**
    * The receipt format, served as a spec.
    *
    * `POST /v1/verify` invites other x402 sellers to use our verifier, which is an empty
@@ -437,6 +450,7 @@ export function buildApp(deps: AppDeps): Hono<Env> {
     `Sitemap: ${base}/sitemap.xml`,
     // Not a sitemap, but the page an agent should read first.
     `# Agent docs: ${base}/agent.md`,
+    `# Agent card: ${base}/.well-known/agent-card.json`,
     "",
   ].join("\n")));
 

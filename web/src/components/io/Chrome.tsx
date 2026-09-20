@@ -68,12 +68,20 @@ export function TopBar() {
             </div>
           </div>
         </a>
+        {/* The way out of the console, and it must survive a phone. This was
+            `hidden … sm:inline-flex`, so below 640px the only route back to the site
+            was the logo — which does not look like a link — and a visitor who opened
+            the demo from the landing page had no visible way back. The label is what
+            collapses on a narrow screen now, not the control: an icon-only chip with
+            an accessible name, widening to the full sentence from `sm` up. */}
         <a
           href="/"
-          className="hidden items-center gap-1 rounded-md border border-accent/40 px-2.5 py-1.5 text-[12px] font-medium text-accent transition-colors hover:border-accent hover:bg-accent/10 sm:inline-flex"
+          aria-label="Back to iomarkets.app"
+          title="Back to iomarkets.app"
+          className="inline-flex shrink-0 items-center gap-1 rounded-md border border-accent/40 px-2 py-1.5 text-[12px] font-medium text-accent transition-colors hover:border-accent hover:bg-accent/10 sm:px-2.5"
         >
           <ArrowLeft className="size-3.5" />
-          Back to iomarkets.app
+          <span className="hidden sm:inline">Back to iomarkets.app</span>
         </a>
 
         {/* The one number worth carrying in the chrome: what this account may spend. */}
@@ -146,7 +154,12 @@ export function ProgressRail() {
         {STEPS.map((s, i) => {
           const state = s.n === step ? "current" : s.n < step ? "done" : "todo";
           return (
-            <li key={s.n} className="flex flex-1 items-center">
+            /* `min-w-0` is load-bearing: a flex child defaults to `min-width:auto`, so
+               these four items refused to shrink below the width of their own label and
+               pushed the rail — and the whole document — 57px wider than a 390px phone.
+               The `truncate` further down could never fire, because nothing ever asked
+               the item to be narrower. */
+            <li key={s.n} className="flex min-w-0 flex-1 items-center">
               <button
                 onClick={() => reachable(s.n) && goStep(s.n as 1 | 2 | 3 | 4)}
                 disabled={!reachable(s.n)}
