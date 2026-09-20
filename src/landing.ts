@@ -6,7 +6,7 @@ import type { ProductType } from "./suppliers/types.js";
 /** `brand`/`site` come from BRAND_NAME / BRAND_SITE so a rename is a config change,
  *  not an edit to every page. */
 export interface PageFacts {
-  base: string; network: string; pubkey: string; payTo?: string; brand: string; site: string;
+  base: string; network: string; pubkey: string; payTo?: string; brand: string; siteName: string; site: string;
   /**
    * The product types the wired suppliers can actually fulfil right now
    * (CompositeSupplier.availableTypes). Every sentence below that names a product
@@ -199,7 +199,9 @@ export function landingHtml(f: PageFacts): string {
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:image" content="${f.base}${BRAND_ASSETS.og}">
 <meta property="og:url" content="${f.base}/">
+<meta property="og:site_name" content="${esc(f.siteName)}">
 <link rel="canonical" href="${f.base}/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"${esc(f.siteName)}","url":"${f.site}/"}</script>
 <meta name="theme-color" content="#0F2557">
 <link rel="icon" href="${BRAND_ASSETS.favicon}" type="image/png">
 <link rel="apple-touch-icon" href="${BRAND_ASSETS.touch}">

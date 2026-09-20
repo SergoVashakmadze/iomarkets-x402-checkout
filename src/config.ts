@@ -96,6 +96,11 @@ export const config = {
   apiPrefix: "/v1",
   brand: {
     name: opt("BRAND_NAME", "IoMarkets Topup"),
+    // The site name Google prints in the grey line above a result. Deliberately
+    // NOT `name`: that is the product ("IoMarkets Topup") and belongs in the
+    // <title>. Google wants the property's own name, and it printed the bare
+    // lowercase domain while this site declared nothing at all.
+    siteName: opt("BRAND_SITE_NAME", "IoMarkets.app"),
     site: opt("BRAND_SITE", "https://iomarkets.app"),
     supportEmail: opt("SUPPORT_EMAIL", ""),
   },

@@ -29,6 +29,7 @@ const FACTS = {
   pubkey: "abc123",
   payTo: "PAYTOADDRESS",
   brand: "IoMarkets Topup",
+  siteName: "IoMarkets.app",
   site: "https://iomarkets.app",
 } as const;
 

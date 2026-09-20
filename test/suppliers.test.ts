@@ -127,7 +127,7 @@ describe("the service knows what it can actually sell", () => {
   });
 
   it("renders prose from that list rather than from a hand-written sentence", () => {
-    const f = { base: "b", network: "mainnet", pubkey: "", brand: "x", site: "s" };
+    const f = { base: "b", network: "mainnet", pubkey: "", brand: "x", siteName: "X.app", site: "s" };
     expect(productList({ ...f, products: ["topup"] })).toBe("mobile airtime & data top-ups");
     expect(productList({ ...f, products: ["topup", "esim"] })).toBe("mobile airtime & data top-ups and travel eSIMs");
     expect(productList({ ...f, products: [] })).toMatch(/no supplier is wired/);

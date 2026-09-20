@@ -252,7 +252,7 @@ export function buildApp(deps: AppDeps): Hono<Env> {
   // Supplier (tests) may not, in which case fall back to the full set.
   const liveTypes: ProductType[] = [...((supplier as { productTypes?: readonly ProductType[] }).productTypes
     ?? (["topup", "esim", "bill", "payout"] as const))];
-  const pageFacts = { base, network: config.network, pubkey: receiptPubkey, brand: config.brand.name, site: config.brand.site, products: liveTypes };
+  const pageFacts = { base, network: config.network, pubkey: receiptPubkey, brand: config.brand.name, siteName: config.brand.siteName, site: config.brand.site, products: liveTypes };
 
   app.use("*", cors({ origin: "*", allowHeaders: ["*"], exposeHeaders: ["PAYMENT-RESPONSE", "PAYMENT-REQUIRED", "X-PAYMENT-RESPONSE"] }));
 
