@@ -144,6 +144,11 @@ describe("the landing page says what this is, and carries the brand", () => {
     expect(html).toContain("IoMarkets Ecosystem");
     expect(html).toContain('<a role="menuitem" href="/" class="cur">');
     expect(html).toContain('href="https://iomarkets.money" target="_blank"');
+    // The newest ecosystem row, added 2026-09-19. Pinned because the list is a
+    // hand-maintained copy of the one every sibling site carries, and the public
+    // mirror silently went a day without it — a missing row looks like nothing.
+    expect(html).toContain('href="https://merchants.london" target="_blank"');
+    expect(html).toContain("Merchants of London");
     // The logo, on the page and in the social card.
     expect(html).toContain('src="/brand/logo.webp"');
     expect(html).toMatch(/property="og:image" content="http[^"]*\/brand\/logo-og\.png"/);
@@ -174,7 +179,7 @@ describe("landing: simulate this purchase", () => {
   // the demo video, not by any test.
   it("selects the offer after resetting, not before", async () => {
     const { landingHtml } = await import("../src/landing.js");
-    const html = landingHtml({ base: "http://x", network: "mainnet", pubkey: "", brand: "B", site: "http://x" });
+    const html = landingHtml({ base: "http://x", network: "mainnet", pubkey: "", brand: "B", siteName: "B.app", site: "http://x" });
     expect(html).not.toContain("sel=o;reset()");
     expect(html).toContain("reset();sel=o;run.disabled=false");
   });
@@ -202,7 +207,7 @@ describe("the landing page fits a phone", () => {
     // on a clean checkout. Caught by the public repo, which has no .env.
     const { landingHtml } = await import("../src/landing.js");
     const html = landingHtml({
-      base: "http://x", network: "mainnet", pubkey: "", brand: "B", site: "http://x",
+      base: "http://x", network: "mainnet", pubkey: "", brand: "B", siteName: "B.app", site: "http://x",
       payTo: "FVEJDCQFCHVG4Y6M2JVAD4L447E2R2OHJKT5APXV7AZI7XXOQU6RUVSKCA",
     });
     expect(html).toMatch(/payTo <code>/);

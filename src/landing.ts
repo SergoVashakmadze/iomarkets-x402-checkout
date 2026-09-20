@@ -164,6 +164,7 @@ const ECOSYSTEM: ReadonlyArray<{ name: string; description: string; href: string
   { name: "IoMarkets.news", description: "Global Online Financial News", href: "https://iomarkets.news", icon: "📰" },
   { name: "IoMarkets.tech", description: "Financial Technology Solutions", href: "https://iomarkets.tech", icon: "⚙️" },
   { name: "DipBuyer AI", description: "AI Agent for Value Investing", href: "https://dipbuyer.ai", icon: "🎯" },
+  { name: "Merchants of London", description: "Merchant Bank & MFO", href: "https://merchants.london", icon: "🏦" },
 ];
 
 /** The footer every IoMarkets® site carries: the four entities, the socials, the credit. */
