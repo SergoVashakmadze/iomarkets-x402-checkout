@@ -173,6 +173,29 @@ describe("the landing page says what this is, and carries the brand", () => {
   });
 });
 
+// The footer's social links were bare text here while every sibling site drew the
+// glyph beside the name. These are iomarkets.org's own paths (its
+// src/components/icons/social.tsx) copied in, so pin a distinctive slice of each:
+// if .org redraws a glyph and this copy is not updated, the two sites diverge
+// silently — which is exactly how they diverged in the first place.
+describe("the footer draws the same social glyphs as iomarkets.org", () => {
+  it("renders an icon beside each name, from the shared paths", async () => {
+    const html = await (await build().request("/")).text();
+    for (const [name, head] of [
+      ["Twitter (X)", "M14.234 10.162 22.977 0h-2.072"],
+      ["LinkedIn", "M20.447 20.452h-3.554v-5.569"],
+      ["Facebook", "M9.101 23.691v-7.98H6.627v-3.667"],
+      ["YouTube", "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136"],
+    ]) {
+      expect(html, name).toContain(`<path d="${head}`);
+      // glyph first, then the name, inside the one link
+      expect(html, name).toMatch(new RegExp(`<svg[^>]*><path d="${head.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}[^"]*"/></svg>${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}</a>`));
+    }
+    // sized and aligned like .org's h-4 w-4 / gap-2 row
+    expect(html).toContain("footer li a.soc svg{width:1rem;height:1rem;flex:none}");
+  });
+});
+
 describe("landing: simulate this purchase", () => {
   // Clicking an offer set `sel` and THEN called reset(), which nulls it — so the button
   // was enabled and did nothing, on the live page, until 2026-09-16. Found by recording

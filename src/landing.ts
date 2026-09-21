@@ -2,6 +2,7 @@
 // from the same facts so they can never disagree.
 
 import type { ProductType } from "./suppliers/types.js";
+import { SOCIAL_ICONS, type SocialIcon } from "./social-icons.js";
 
 /** `brand`/`site` come from BRAND_NAME / BRAND_SITE so a rename is a config change,
  *  not an edit to every page. */
@@ -174,11 +175,11 @@ const ENTITIES: ReadonlyArray<readonly [string, string[]]> = [
   ["Ltd", ["20-22 Wenlock Road", "London, N1 7GU", "United Kingdom"]],
   ["WLL", ["Office No. 1002, Building 1260, Road 2421, Block 324, Juffair", "Manama / Al Fateh", "Kingdom of Bahrain"]],
 ];
-const SOCIAL: ReadonlyArray<readonly [string, string]> = [
-  ["Twitter (X)", "https://x.com/IoMarkets"],
-  ["LinkedIn", "https://www.linkedin.com/company/109605371/"],
-  ["Facebook", "https://www.facebook.com/IoMarkets/"],
-  ["YouTube", "https://youtu.be/Jj8Hx4rACOU"],
+const SOCIAL: ReadonlyArray<readonly [string, string, SocialIcon]> = [
+  ["Twitter (X)", "https://x.com/IoMarkets", "twitter"],
+  ["LinkedIn", "https://www.linkedin.com/company/109605371/", "linkedin"],
+  ["Facebook", "https://www.facebook.com/IoMarkets/", "facebook"],
+  ["YouTube", "https://youtu.be/Jj8Hx4rACOU", "youtube"],
 ];
 
 const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
@@ -372,6 +373,7 @@ footer h4.b{color:#2563EB}
 footer p{margin:0 0 .75rem;font-weight:300;line-height:1.6;color:#4B5563}
 footer a{color:#0891B2}footer a:hover{color:#06B6D4}
 footer ul{list-style:none;margin:0;padding:0}footer li{margin-bottom:.75rem}footer li a{color:#4B5563;font-weight:300}footer li a:hover{color:#0891B2}
+footer li a.soc{display:flex;align-items:center;gap:.5rem}footer li a.soc svg{width:1rem;height:1rem;flex:none}
 footer .bottom{padding-top:2rem;border-top:1px solid #E2E8F0;text-align:center}
 footer .bottom .by{font-size:1rem;font-weight:600;color:#374151;margin-bottom:.5rem}footer .bottom .by a{color:#0891B2}footer .bottom .by a:hover{text-decoration:underline}
 footer .bottom .cp{font-size:.875rem;color:#4B5563;font-weight:300}footer .bottom .cp sup{font-size:.75rem}
@@ -582,7 +584,7 @@ GET  ${esc(f.base)}/v1/orders/ord_…
       <p>Email: <a href="mailto:info@iomarkets.org">info@iomarkets.org</a></p>
     </div>
     ${ENTITIES.map(([ent, lines], i) => `<div><h4${i >= 2 ? ' class="b"' : ""}>IoMarkets<sup>®</sup> ${ent}</h4><p>${lines.join("<br>")}</p></div>`).join("\n    ")}
-    <div><h4>Follow Us</h4><ul>${SOCIAL.map(([n, u]) => `<li><a href="${u}" target="_blank" rel="noopener noreferrer">${n}</a></li>`).join("")}</ul></div>
+    <div><h4>Follow Us</h4><ul>${SOCIAL.map(([n, u, i]) => `<li><a class="soc" href="${u}" target="_blank" rel="noopener noreferrer">${SOCIAL_ICONS[i]}${n}</a></li>`).join("")}</ul></div>
   </div>
   <div class="bottom">
     <p class="by">Built with ❤️ by <a href="https://www.linkedin.com/in/sergovashakmadze/" target="_blank" rel="noopener noreferrer">Sergo Vashakmadze</a></p>
