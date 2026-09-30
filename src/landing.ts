@@ -3,6 +3,7 @@
 
 import type { ProductType } from "./suppliers/types.js";
 import { SOCIAL_ICONS, type SocialIcon } from "./social-icons.js";
+import { DEMO_BANNER_HTML } from "./demo-banner.js";
 
 /** `brand`/`site` come from BRAND_NAME / BRAND_SITE so a rename is a config change,
  *  not an edit to every page. */
@@ -37,10 +38,14 @@ export function productList(f: PageFacts): string {
 export function agentMd(f: PageFacts): string {
   return `# ${f.brand} — real-world checkout for AI agents (x402 on Algorand)
 
-Buy real-world goods for your principal in 150+ countries.
+Buy real-world goods for your principal.
 No account, no API key, no card. Pay per order in USDC on Algorand (${f.network}) using x402.
 
-**Live right now: ${productList(f)}.** This list is what the wired suppliers can actually fulfil today, not a
+**Status: technology demonstration.** It has been tested on real data with real money in a limited pilot, and it
+is not offered as a commercial service until the required licences, penetration testing and security audits are
+complete. Payments made here are real: they settle USDC on Algorand ${f.network}.
+
+**Available in this pilot: ${productList(f)}.** This list is what the wired suppliers can actually fulfil today, not a
 roadmap — \`GET ${f.base}/v1/catalog?type=<type>\` returns an empty list for anything not on it, and a quote
 for one is refused rather than accepted and then failed. Other types may return later; re-read this file.
 
@@ -51,7 +56,7 @@ Base URL: ${f.base}
    - GET  ${f.base}/v1/lookup?phone=%2B919876543210        → operator + top-up offers for that number
    - GET  ${f.base}/v1/countries?type=esim                   → every destination this product reaches
      (enumerable:false means the supplier will not list them, NOT that there are none)
-   - GET  ${f.base}/v1/catalog?type=topup&country=NG        → offers (types live today: ${(f.products ?? ["topup","esim","bill","payout"]).join("|")})
+   - GET  ${f.base}/v1/catalog?type=topup&country=NG        → offers (types available in this pilot: ${(f.products ?? ["topup","esim","bill","payout"]).join("|")})
      Paged: &limit=100&offset=0 (limit=0 for everything). The response carries total and,
      while there is more, next_offset. The eSIM catalogue is thousands of offers — ask for a
      country, or a page.
@@ -121,7 +126,9 @@ export function fundHtml(f: PageFacts): string {
 <title>Fund your agent with USDC on Algorand — ${f.brand}</title>
 <link rel="canonical" href="${f.base}/fund">
 <style>body{margin:0;font:16px/1.55 system-ui,sans-serif;background:#0b0f14;color:#e8edf2}main{max-width:820px;margin:0 auto;padding:40px 20px}a{color:#39d98a}
-.card{background:#121923;border:1px solid #1f2a37;border-radius:12px;padding:16px;margin:12px 0}code{font-family:ui-monospace,monospace}</style></head><body><main>
+.card{background:#121923;border:1px solid #1f2a37;border-radius:12px;padding:16px;margin:12px 0}code{font-family:ui-monospace,monospace}</style></head><body>
+${DEMO_BANNER_HTML}
+<main>
 <h1>Fund your agent with USDC on Algorand</h1>
 <p>Every purchase here is paid in <b>USDC on Algorand (USDCa, ASA 31566704)</b> by the agent's own wallet. Give the wallet a few dollars of USDCa and ~0.2 ALGO (it must opt in to USDC once). Three ways:</p>
 <div class="card"><b>1. From an exchange</b> — Kraken supports USDC deposits/withdrawals on Algorand; withdraw USDC choosing the <i>Algorand</i> network to the agent's address.</div>
@@ -192,7 +199,7 @@ export function landingHtml(f: PageFacts): string {
     network: f.network, payTo: f.payTo ?? "", pubkey: f.pubkey, base: f.base,
     products: products.map((t) => ({ type: t, label: PRODUCT_LABEL[t] })),
   }).replace(/</g, "\\u003c");
-  const description = `${f.brand}: real-world checkout for AI agents. ${live[0].toUpperCase()}${live.slice(1)} in 150+ countries, paid per order in USDC on Algorand via x402. Settle first, deliver second, refund on-chain, signed receipts, public ledger. Part of the IoMarkets® ecosystem.`;
+  const description = `${f.brand}: real-world checkout for AI agents. A technology demonstration, tested with real money in a limited pilot; not a commercial service. ${live[0].toUpperCase()}${live.slice(1)}, paid per order in USDC on Algorand via x402. Settle first, deliver second, refund on-chain, signed receipts, public ledger. Part of the IoMarkets® ecosystem.`;
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(f.brand)} — real-world checkout for AI agents on Algorand</title>
 <meta name="description" content="${esc(description)}">
@@ -383,6 +390,7 @@ footer .bottom .fine{font-size:.75rem;color:#6B7280;font-weight:300;margin-top:.
 :root[data-theme="dark"] footer{background:linear-gradient(135deg,#0A1430,#0D1A3C);border-top-color:#243259;color:#B3BDD6}
 :root[data-theme="dark"] footer p,:root[data-theme="dark"] footer li a,:root[data-theme="dark"] footer .bottom .cp{color:#B3BDD6}:root[data-theme="dark"] footer .bottom{border-top-color:#243259}:root[data-theme="dark"] footer .bottom .by{color:#E8EDF8}:root[data-theme="dark"] footer .bottom .fine{color:#7F8BAB}
 </style></head><body>
+${DEMO_BANNER_HTML}
 <div class="bar"><div class="bar-in">
   <a class="brand" href="/" aria-label="${esc(f.brand)} home"><img src="${BRAND_ASSETS.logo}" alt="IoMarkets logo" width="40" height="44"><span><b>IoMarkets<sup>®</sup></b><small>App</small></span></a>
   <nav class="top" aria-label="Sections"><a href="#what">What it is</a><a href="#try">Try it</a><a href="#how">How it works</a><a href="#agents">For agents</a><a href="#business">For businesses</a><a href="#share">Share &amp; earn</a><a href="#trust">Trust</a><a href="#about">About</a></nav>
@@ -403,19 +411,19 @@ footer .bottom .fine{font-size:.75rem;color:#6B7280;font-weight:300;margin-top:.
   <div>
     <div class="eyebrow">Part of the IoMarkets® ecosystem · Payments for AI agents</div>
     <h1>Real-world checkout for AI agents.</h1>
-    <p class="lead">An AI agent cannot open a bank account, hold a card or file a chargeback. ${esc(f.brand)} is a merchant built for that buyer: it sells <b>${esc(live)}</b> in 150+ countries, paid per order in USDC on Algorand through <a href="https://x402.org">x402</a>. No account, no API key, no card.</p>
+    <p class="lead">An AI agent cannot open a bank account, hold a card or file a chargeback. ${esc(f.brand)} is a merchant built for that buyer, tested with real money in a limited pilot: it fulfils <b>${esc(live)}</b>, paid per order in USDC on Algorand through <a href="https://x402.org">x402</a>. No account, no API key, no card.</p>
     <p class="lead">Money settles on-chain first, goods ship second, anything that fails is refunded on-chain automatically, and every order carries a signed receipt anyone can verify.</p>
     <div class="cta">
-      <a class="btn primary" href="#try">Try it live, free</a>
+      <a class="btn primary" href="#try">Try a simulated purchase</a>
       <a class="btn gold" href="/pay?demo=1">Walk through the payout demo</a>
-      <a class="btn" href="/agent.md">Agent docs (4 HTTP calls)</a>
+      <a class="btn" href="/agent.md">Agent docs</a>
     </div>
-    <div class="facts"><span><b>~3 s</b> on-chain settlement</span><span><b>200+</b> eSIM destinations</span><span><b>150+</b> top-up countries</span><span><b>ed25519</b> signed receipts</span><span><b>$50</b> max per order</span></div>
+    <div class="facts"><span><b>On-chain</b> settlement</span><span><b>Travel</b> eSIMs</span><span><b>Mobile</b> top-ups</span><span><b>ed25519</b> signed receipts</span><span><b>Per-order</b> limits</span></div>
   </div>
   <div class="hero-side">
     <img class="logo-hero" src="${BRAND_ASSETS.logo}" alt="IoMarkets — I@MRKET$ over a circuit board" width="340" height="374">
     <div class="ticket" id="ticket" hidden>
-      <div class="row"><span class="k">Latest real order</span><span class="v" id="t-status"></span></div>
+      <div class="row"><span class="k">Latest pilot order</span><span class="v" id="t-status"></span></div>
       <div class="row"><span class="k">What</span><span class="v" id="t-what"></span></div>
       <div class="row"><span class="k">Paid</span><span class="v" id="t-paid"></span></div>
       <div class="row"><span class="k">Delivered in</span><span class="v" id="t-time"></span></div>
@@ -428,7 +436,7 @@ footer .bottom .fine{font-size:.75rem;color:#6B7280;font-weight:300;margin-top:.
   <div class="eyebrow">What · why · who</div>
   <h2>A shop where the customer is a program.</h2>
   <div class="grid g3" style="margin-top:1.6rem">
-    <div class="card"><div class="ic">?</div><h3>What it is</h3><p>A merchant, not a payments API. Every order buys a real thing from a licensed supplier — an eSIM, phone credit, a prepaid bill, a bank or mobile-money payment — and delivers it to a phone number or account. The agent pays the exact quoted amount in USDC, per order, from its own wallet.</p><p class="more"><b>Live today:</b> ${esc(live)}.</p></div>
+    <div class="card"><div class="ic">?</div><h3>What it is</h3><p>A merchant, not a payments API. Every order buys a real thing from a licensed supplier — an eSIM, phone credit, a prepaid bill, a bank or mobile-money payment — and delivers it to a phone number or account. The agent pays the exact quoted amount in USDC, per order, from its own wallet.</p><p class="more"><b>In this pilot:</b> ${esc(live)}.</p></div>
     <div class="card gold"><div class="ic">!</div><h3>Why it exists</h3><p>Human commerce runs on reversibility: chargebacks, disputes, small claims. An agent paying in stablecoins has none of that — it gets one shot and cannot read the terms. So the product is a settlement discipline that makes a stranger's promise checkable: settle first, deliver second, refund on-chain, sign every receipt, publish the ledger — including the number that makes us look worst.</p></div>
     <div class="card"><div class="ic">@</div><h3>Who it is for</h3><p><b>Agent builders</b> — OpenClaw, Hermes, Claude Code, Codex, any MCP client. Give the agent a wallet; it can buy.</p><p><b>Businesses paying people</b> — paste a spreadsheet into the payout console, approve once, get a receipt for every row.</p><p><b>Anyone with an assistant</b> — top up a relative's phone in Lagos, land in Tokyo with data already on.</p></div>
   </div>
@@ -449,7 +457,7 @@ footer .bottom .fine{font-size:.75rem;color:#6B7280;font-weight:300;margin-top:.
         <div class="steps" id="steps">
           <div class="step" data-s="1"><span class="n">1</span><div><b>Quote — free, locks the price for 10 minutes</b><pre></pre></div></div>
           <div class="step" data-s="2"><span class="n">2</span><div><b>Pay — POST /v1/orders answers 402 with the exact USDC amount</b><pre></pre></div></div>
-          <div class="step" data-s="3"><span class="n">3</span><div><b>Settle — the facilitator confirms the payment on Algorand, ~3 s</b><pre></pre></div></div>
+          <div class="step" data-s="3"><span class="n">3</span><div><b>Settle — the facilitator confirms the payment on Algorand</b><pre></pre></div></div>
           <div class="step" data-s="4"><span class="n">4</span><div><b>Deliver — the order ships and the receipt is signed</b><pre></pre></div></div>
         </div>
         <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem;align-items:center">
@@ -471,7 +479,7 @@ footer .bottom .fine{font-size:.75rem;color:#6B7280;font-weight:300;margin-top:.
     <div class="card"><h3>Pay with x402</h3><p>The first POST answers 402 with the amount. The wallet signs an Algorand USDC transfer and retries. The order exists only after settlement.</p></div>
     <div class="card"><h3>Poll and keep the receipt</h3><p>Delivered, or refunded on-chain to the paying address. Either way, an ed25519-signed receipt naming both transactions.</p></div>
   </div>
-  <div class="guar"><span>Settle first, deliver second</span><span>Automatic on-chain refunds</span><span>Exact pricing</span><span>Signed receipts</span><span>Public ledger</span><span>$50 / order · $200 / payer / day</span></div>
+  <div class="guar"><span>Settle first, deliver second</span><span>Automatic on-chain refunds</span><span>Exact pricing</span><span>Signed receipts</span><span>Public ledger</span><span>Per-order and daily limits</span></div>
 </div></section>
 
 <section id="agents"><div class="wrap">
@@ -539,7 +547,7 @@ GET  ${esc(f.base)}/v1/orders/ord_…
 </div></section>
 
 <section id="ledger"><div class="wrap">
-  <div class="eyebrow">Live · straight from /v1/ledger</div>
+  <div class="eyebrow">Pilot test volume · straight from /v1/ledger</div>
   <h2>Every order, in public.</h2>
   <div class="grid g4" style="margin-top:1.4rem">
     <div class="card stat"><b id="s-orders">–</b><span>orders on ${esc(f.network)}</span></div>
@@ -549,7 +557,7 @@ GET  ${esc(f.base)}/v1/orders/ord_…
   </div>
   <p id="stranded" hidden></p>
   <div class="tw" style="margin-top:1rem"><table id="recent"><tr><th>When</th><th>What</th><th>USDC</th><th>Status</th><th>Settlement</th><th>Proof</th></tr></table></div>
-  <p class="small muted">Recipients are hashed. Volume is small and honest: the service went live on mainnet in late August 2026.</p>
+  <p class="small muted">Recipients are hashed. Volume is small: the service has been tested on mainnet with real data and real money since late August 2026, as a limited pilot. These are pilot test orders, not customer volume.</p>
 </div></section>
 
 <section id="trust"><div class="wrap">
@@ -634,7 +642,7 @@ fetch('/v1/ledger').then(function(r){return r.json()}).then(function(l){
 var cur=null,sel=null,run=$('run');
 function tab(t){cur=t;var ts=$('tabs').children;for(var i=0;i<ts.length;i++)ts[i].setAttribute('aria-selected',ts[i].dataset.t===t.type?'true':'false');reset();load();}
 B.products.forEach(function(p,i){var b=document.createElement('button');b.className='tab';b.role='tab';b.dataset.t=p.type;b.textContent=p.label;b.onclick=function(){tab(p)};$('tabs').appendChild(b);if(i===0)tab(p);});
-if(!B.products.length)$('offers').innerHTML='<p class="muted small">No product is live right now — no supplier is wired.</p>';
+if(!B.products.length)$('offers').innerHTML='<p class="muted small">No product is available right now — no supplier is wired.</p>';
 function field(label,node){var d=document.createElement('div');d.className='field';var l=document.createElement('label');l.textContent=label;d.appendChild(l);d.appendChild(node);return d;}
 function load(){var pick=$('pick');pick.innerHTML='';$('offers').innerHTML='<p class="muted small">Loading the catalogue…</p>';
  fetch('/v1/countries?type='+cur.type).then(function(r){return r.json()}).then(function(c){

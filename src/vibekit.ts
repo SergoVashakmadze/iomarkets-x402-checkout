@@ -139,7 +139,7 @@ export function iomarketsPlugin(
   return {
     name: PLUGIN_NAME,
     description:
-      "Buy real-world goods with USDC on Algorand via x402 — mobile airtime and data top-ups in 150+ countries. Settles on chain before it delivers, refunds failures on chain, and signs every terminal order with a receipt naming both transactions.",
+      "Buy real-world goods with USDC on Algorand via x402 — mobile airtime and data top-ups (a limited pilot, not a commercial service). Settles on chain before it delivers, refunds failures on chain, and signs every terminal order with a receipt naming both transactions.",
     tools,
   };
 }

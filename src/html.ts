@@ -9,6 +9,7 @@
 // Shared so that the two pages cannot answer this question differently.
 
 import { readFileSync } from "node:fs";
+import { DEMO_BANNER_HTML } from "./demo-banner.js";
 
 export interface Fragment {
   /** The <title> and <link> tags, ready for a real <head>. */
@@ -34,6 +35,7 @@ ${f.head}
 <style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 ${opts.inject ?? ""}
 </head><body>
+${DEMO_BANNER_HTML}
 ${f.body}
 </body></html>`;
 }

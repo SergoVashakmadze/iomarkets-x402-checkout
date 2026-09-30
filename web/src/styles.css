@@ -286,3 +286,33 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* The demonstration notice (components/io/DemoBanner.tsx). Same gold as the server-
+   rendered pages' notice (src/demo-banner.ts), so it reads as one site. */
+.iom-demo {
+  background: #f8f0da;
+  color: #3a2f14;
+  border-bottom: 1px solid #b8902a;
+  font-size: 14px;
+  line-height: 1.5;
+  position: relative;
+  z-index: 40;
+}
+.iom-demo-in {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0.6rem 16px;
+  overflow-wrap: anywhere;
+}
+.iom-demo b {
+  font-weight: 600;
+  color: #1b1500;
+}
+.dark .iom-demo {
+  background: #3a2f14;
+  color: #f4e7c3;
+  border-bottom-color: #d9b85e;
+}
+.dark .iom-demo b {
+  color: #fff6dc;
+}

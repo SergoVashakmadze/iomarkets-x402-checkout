@@ -822,7 +822,7 @@ export function buildApp(deps: AppDeps): Hono<Env> {
       // what a Bazaar browser — and a judge — reads to decide what this is, and it had
       // been promising four product types while one was fulfillable.
       description:
-        `Buy real-world goods for an AI agent's principal in 150+ countries — ${productList(pageFacts)} — paid per order in USDC on Algorand. Flow: GET /v1/lookup?phone=… or GET /v1/catalog?type=${liveTypes[0] ?? "topup"} → POST /v1/quote → pay this route with {quoteId} → poll GET /v1/orders/{id} until delivered. Every delivered or refunded order carries an ed25519-signed receipt naming the on-chain settlement (and refund) txid; failed deliveries are refunded on-chain automatically.`,
+        `Limited pilot, not a commercial service. Buy real-world goods for an AI agent's principal — ${productList(pageFacts)} — paid per order in USDC on Algorand. Flow: GET /v1/lookup?phone=… or GET /v1/catalog?type=${liveTypes[0] ?? "topup"} → POST /v1/quote → pay this route with {quoteId} → poll GET /v1/orders/{id} until delivered. Every delivered or refunded order carries an ed25519-signed receipt naming the on-chain settlement (and refund) txid; failed deliveries are refunded on-chain automatically.`,
       serviceName: config.brand.name,
       tags: [CHALLENGE_TAG, ...liveTypes, "airtime", "agentic-commerce", "real-world", "x402", "algorand"],
       unpaidResponseBody: async (ctx) => {

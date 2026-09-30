@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { DemoBanner } from "@/components/io/DemoBanner";
 
 function NotFoundComponent() {
   return (
@@ -76,7 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "IoMarkets — batch payouts" },
       {
         name: "description",
-        content: "Pay 20-300 recipients across borders in one batch, priced and settled in USDC.",
+        content: "Pay many recipients across borders in one batch, priced and settled in USDC.",
       },
       // The console sits behind a wallet connection and is not a page to be indexed
       // or shared; robots.txt disallows it and there is no card to render.
@@ -113,6 +114,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <DemoBanner />
         {children}
         <Scripts />
       </body>
