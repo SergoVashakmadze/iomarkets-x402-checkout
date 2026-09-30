@@ -350,8 +350,8 @@ export function StepRecipients() {
                 ? `${countries.length} sample corridors${notYetOpen.length ? `; ${notYetOpen.length} more countries listed, not yet open` : ""}. `
                 : ""}
               Bank and mobile-money payouts open country by country as a licensed payout partner is
-              connected. <b className="text-foreground">Airtime &amp; data</b> reaches 155 countries
-              today, and travel eSIMs 200+.
+              connected. <b className="text-foreground">Airtime &amp; data</b> and travel
+              eSIMs are available in the pilot today.
             </p>
           )}
 

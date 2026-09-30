@@ -5,6 +5,7 @@
 // lands on from a shared link look like the site they came from rather than a tool.
 
 import { BRAND_ASSETS } from "./landing.js";
+import { DEMO_BANNER_HTML } from "./demo-banner.js";
 
 export const esc = (s: unknown): string =>
   String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -112,6 +113,7 @@ ${o.noindex ? '<meta name="robots" content="noindex">' : `<link rel="canonical" 
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>${TOKENS}</style></head><body>
+${DEMO_BANNER_HTML}
 <div class="bar"><div class="bar-in">
   <a class="brand" href="/" aria-label="IoMarkets home"><img src="${BRAND_ASSETS.logo}" alt="IoMarkets logo" width="34" height="37"><span><b>IoMarkets®</b><small>App</small></span></a>
   <span class="spacer"></span>

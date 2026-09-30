@@ -88,9 +88,9 @@ export function TopBar() {
         <div className="ml-6 hidden items-center gap-5 border-l border-ink-border pl-6 lg:flex">
           <div className="leading-tight">
             <div className="text-[10px] font-semibold tracking-[0.1em] text-ink-muted uppercase">
-              Settles in
+              Settles
             </div>
-            <div className="num text-[13px] font-semibold text-ink-foreground">~3s on-chain</div>
+            <div className="num text-[13px] font-semibold text-ink-foreground">On-chain</div>
           </div>
           <div className="leading-tight">
             <div className="text-[10px] font-semibold tracking-[0.1em] text-ink-muted uppercase">

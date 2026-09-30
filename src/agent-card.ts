@@ -61,7 +61,7 @@ const PRODUCT_SKILLS: Record<ProductType, Skill> = {
     id: "buy-esim",
     name: "Buy a travel eSIM",
     description:
-      "Buy a data eSIM for 200+ destinations and receive the activation QR / LPA string. Paid per order in USDC on Algorand over x402 — no account, no API key, no card. Browse with GET /v1/catalog?type=esim&country=JP, lock a price with POST /v1/quote, pay POST /v1/orders.",
+      "Buy a travel data eSIM and receive the activation QR / LPA string. Paid per order in USDC on Algorand over x402 — no account, no API key, no card. Browse with GET /v1/catalog?type=esim&country=JP, lock a price with POST /v1/quote, pay POST /v1/orders.",
     tags: ["esim", "travel", "connectivity", "real-world", "x402", "algorand"],
     examples: [
       "Buy a 10 GB eSIM for my trip to Japan next week",
@@ -72,7 +72,7 @@ const PRODUCT_SKILLS: Record<ProductType, Skill> = {
     id: "buy-airtime",
     name: "Top up a mobile number",
     description:
-      "Send mobile airtime or data to a phone number in 150+ countries. GET /v1/lookup?phone=+919876543210 detects the country and operator and lists offers; the detected operator is a guess for MVNOs and must be confirmed with the human before buying. Paid per order in USDC on Algorand over x402.",
+      "Send mobile airtime or data to a phone number. GET /v1/lookup?phone=+919876543210 detects the country and operator and lists offers; the detected operator is a guess for MVNOs and must be confirmed with the human before buying. Paid per order in USDC on Algorand over x402.",
     tags: ["airtime", "topup", "mobile", "real-world", "x402", "algorand"],
     examples: [
       "Top up +2348012345678 with 1000 naira of airtime",
@@ -150,7 +150,7 @@ export function agentCard(f: PageFacts): Record<string, unknown> {
     protocolVersion: PROTOCOL_VERSION,
     name: f.brand,
     description:
-      `Real-world checkout for AI agents. Buys physical-world goods and services for an agent's principal in 150+ countries — currently ${skillSummary(products)} — paid per order in USDC on Algorand (${f.network}) over x402. No account, no API key, no card. Money settles on-chain before anything is bought; a failed delivery is refunded to the paying address on-chain automatically; every terminal order carries an ed25519-signed receipt naming both transaction ids, and the full order ledger is public.`,
+      `Real-world checkout for AI agents: a technology demonstration, tested on real data with real money in a limited pilot, and not offered as a commercial service until the required licences, penetration testing and security audits are complete. Buys physical-world goods and services for an agent's principal — currently ${skillSummary(products)} — paid per order in USDC on Algorand (${f.network}) over x402. No account, no API key, no card. Money settles on-chain before anything is bought; a failed delivery is refunded to the paying address on-chain automatically; every terminal order carries an ed25519-signed receipt naming both transaction ids, and the full order ledger is public.`,
     // No `url` and no `preferredTransport` — see the header note. The interface a caller
     // should actually use is documented, in prose, at documentationUrl.
     provider: { organization: "IoMarkets", url: f.site },

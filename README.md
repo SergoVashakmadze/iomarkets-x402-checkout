@@ -1,21 +1,25 @@
 # IoMarkets Topup — real-world checkout for AI agents on Algorand
 
-**Your AI agent can now buy real things — and send money.** **Live today: travel eSIMs for 200+ destinations
-and mobile airtime/data top-ups in 150+ countries.** Prepaid bills and international payments (bank / mobile
+> **Demonstration only.** This is a technology demonstration that has been tested on real data with real money
+> in a limited pilot. It is not offered as a commercial service until the required licences, penetration testing
+> and security audits are complete.
+
+**Your AI agent can buy real things — and send money.** **In the pilot today: travel eSIMs and mobile
+airtime/data top-ups.** Prepaid bills and international payments (bank / mobile
 money / UPI payouts via a licensed partner) are built and supplier-gated. Everything is
 paid per order in USDC on Algorand via [x402](https://x402.org). No account, no API key,
 no card. Money settles on-chain first, goods ship second, failures refund on-chain automatically, and every
 terminal order carries an ed25519-signed receipt anyone can verify.
 
 Built for the [Global x402 Challenge](https://algorand.co/global-x402-challenge) (Algorand Foundation × GoPlausible).
-Live: **https://iomarkets.app** · agent docs: `/agent.md` · ledger: `/v1/ledger` · receipt spec: [`docs/RECEIPTS.md`](docs/RECEIPTS.md)
+Pilot: **https://iomarkets.app** · agent docs: `/agent.md` · ledger: `/v1/ledger` · receipt spec: [`docs/RECEIPTS.md`](docs/RECEIPTS.md)
 
 ## How it works
 ```
 agent ── GET /v1/lookup?phone=+91…  ─▶ operator + offers                      (free)
 agent ── POST /v1/quote {type, offerId, recipient, amount} ─▶ quoteId, price   (free, 10-min lock)
 agent ── POST /v1/orders {quoteId} ─▶ 402 + exact USDC amount                 (x402)
-agent ── …signs Algorand USDC payment, retries with PAYMENT-SIGNATURE ─▶ facilitator settles on-chain (~3 s)
+agent ── …signs Algorand USDC payment, retries with PAYMENT-SIGNATURE ─▶ facilitator settles on-chain
 server ── order created ONLY after settlement ─▶ supplier purchase ─▶ delivered | failed → on-chain refund
 agent ── GET /v1/orders/{id} ─▶ status, confirmation (operator ref / eSIM LPA), signed receipt, txids
 ```
@@ -24,7 +28,7 @@ agent ── GET /v1/orders/{id} ─▶ status, confirmation (operator ref / eSI
 |---|---|---|
 | `GET /v1/lookup?phone=` | free | country / operator / offers for a number |
 | `GET /v1/catalog?type=topup\|esim\|bill\|payout&country=&limit=&offset=` | free | browse offers / payout corridors with indicative USDC prices (paged: 100 by default, `total` + `next_offset` in the response, `limit=0` for all) |
-| `GET /v1/countries?type=esim` | free | every destination a product reaches (200+ for eSIMs); `enumerable:false` = the supplier will not list them |
+| `GET /v1/countries?type=esim` | free | every destination a product reaches; `enumerable:false` = the supplier will not list them |
 | `GET /v1/fx?to=INR&amount=&type=` | free | indicative USDC→local rate at our sale price + estimate (`type` = topup \| bill \| payout, since the markup can differ per product) |
 | `POST /v1/quote` | free | lock an exact price for one purchase |
 | `POST /v1/orders` | **the quoted amount, x402** | pay → order |
