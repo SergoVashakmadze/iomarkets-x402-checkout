@@ -5,10 +5,11 @@
 // (2) the txids exist on Algorand. Nothing here depends on trusting us.
 
 import * as ed from "@noble/ed25519";
-import { sha512 } from "@noble/hashes/sha512";
+import { sha512 } from "@noble/hashes/sha2.js";
 import { createHash, createHmac } from "node:crypto";
 
-ed.etc.sha512Sync = (...m) => sha512(ed.etc.concatBytes(...m));
+// @noble/ed25519 v3 takes the synchronous hash as `hashes.sha512` (v2 used `etc.sha512Sync`).
+ed.hashes.sha512 = sha512;
 
 const enc = new TextEncoder();
 const toHex = (b: Uint8Array) => Buffer.from(b).toString("hex");
@@ -86,7 +87,7 @@ export function derivePublicKey(privHex: string): string {
 }
 
 export function generateKeypair(): { privateKey: string; publicKey: string } {
-  const priv = ed.utils.randomPrivateKey();
+  const priv = ed.utils.randomSecretKey();
   return { privateKey: toHex(priv), publicKey: toHex(ed.getPublicKey(priv)) };
 }
 
