@@ -164,7 +164,7 @@ const ECOSYSTEM: ReadonlyArray<{ name: string; description: string; href: string
   { name: "IoMarkets.app", description: "Real-World Checkout for AI Agents", href: "/", icon: "🛒", current: true },
   { name: "IoMarkets.xyz", description: "Digital Collectibles & NFT Platform", href: "https://iomarkets.xyz", icon: "🎨" },
   { name: "IoMarkets.pro", description: "Universal Exchange - Pro Trading Suite", href: "https://iomarkets.pro", icon: "💹" },
-  { name: "IoMarkets.ai", description: "AI-Powered Markets Intelligence", href: "https://iomarkets.ai", icon: "🤖" },
+  { name: "IoMarkets.ai", description: "Verifiable AI for Finance", href: "https://iomarkets.ai", icon: "🤖" },
   { name: "IoMarkets.co", description: "Corporate Finance & Investor Relations", href: "https://iomarkets.co", icon: "🏢" },
   { name: "IoMarkets.vc", description: "Venture Capital Investment Fund", href: "https://iomarkets.vc", icon: "🚀" },
   { name: "IoMarkets.fund", description: "Asset Management", href: "https://iomarkets.fund", icon: "📊" },
