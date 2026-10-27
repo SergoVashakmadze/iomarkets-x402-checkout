@@ -11,7 +11,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { DemoBanner } from "@/components/io/DemoBanner";
 
 function NotFoundComponent() {
   return (
@@ -115,7 +114,6 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <DemoBanner />
         {children}
         <Scripts />
       </body>

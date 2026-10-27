@@ -3,7 +3,6 @@
 
 import type { ProductType } from "./suppliers/types.js";
 import { SOCIAL_ICONS, type SocialIcon } from "./social-icons.js";
-import { DEMO_BANNER_HTML } from "./demo-banner.js";
 
 /** `brand`/`site` come from BRAND_NAME / BRAND_SITE so a rename is a config change,
  *  not an edit to every page. */
@@ -127,7 +126,6 @@ export function fundHtml(f: PageFacts): string {
 <link rel="canonical" href="${f.base}/fund">
 <style>body{margin:0;font:16px/1.55 system-ui,sans-serif;background:#0b0f14;color:#e8edf2}main{max-width:820px;margin:0 auto;padding:40px 20px}a{color:#39d98a}
 .card{background:#121923;border:1px solid #1f2a37;border-radius:12px;padding:16px;margin:12px 0}code{font-family:ui-monospace,monospace}</style></head><body>
-${DEMO_BANNER_HTML}
 <main>
 <h1>Fund your agent with USDC on Algorand</h1>
 <p>Every purchase here is paid in <b>USDC on Algorand (USDCa, ASA 31566704)</b> by the agent's own wallet. Give the wallet a few dollars of USDCa and ~0.2 ALGO (it must opt in to USDC once). Three ways:</p>
@@ -390,7 +388,6 @@ footer .bottom .fine{font-size:.75rem;color:#6B7280;font-weight:300;margin-top:.
 :root[data-theme="dark"] footer{background:linear-gradient(135deg,#0A1430,#0D1A3C);border-top-color:#243259;color:#B3BDD6}
 :root[data-theme="dark"] footer p,:root[data-theme="dark"] footer li a,:root[data-theme="dark"] footer .bottom .cp{color:#B3BDD6}:root[data-theme="dark"] footer .bottom{border-top-color:#243259}:root[data-theme="dark"] footer .bottom .by{color:#E8EDF8}:root[data-theme="dark"] footer .bottom .fine{color:#7F8BAB}
 </style></head><body>
-${DEMO_BANNER_HTML}
 <div class="bar"><div class="bar-in">
   <a class="brand" href="/" aria-label="${esc(f.brand)} home"><img src="${BRAND_ASSETS.logo}" alt="IoMarkets logo" width="40" height="44"><span><b>IoMarkets<sup>®</sup></b><small>App</small></span></a>
   <nav class="top" aria-label="Sections"><a href="#what">What it is</a><a href="#try">Try it</a><a href="#how">How it works</a><a href="#agents">For agents</a><a href="#business">For businesses</a><a href="#share">Share &amp; earn</a><a href="#trust">Trust</a><a href="#about">About</a></nav>
