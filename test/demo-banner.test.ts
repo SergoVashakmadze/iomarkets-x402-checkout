@@ -11,7 +11,7 @@ import { Db } from "../src/db.js";
 import { OrderService } from "../src/orders.js";
 import { generateKeypair } from "../src/receipt.js";
 import { MockSupplier } from "../src/suppliers/mock.js";
-import { DEMO_BANNER_BODY, DEMO_BANNER_LEAD } from "../src/demo-banner.js";
+import { DEMO_BANNER_BODY } from "../src/demo-banner.js";
 
 function build() {
   const kp = generateKeypair();
@@ -27,7 +27,6 @@ function build() {
 
 describe("the demonstration notice", () => {
   it("says what the owner wrote, verbatim", () => {
-    expect(DEMO_BANNER_LEAD).toBe("Demonstration only.");
     expect(DEMO_BANNER_BODY).toBe(
       "This is a technology demonstration that has been tested on real data with real money in a limited pilot. " +
       "It is not offered as a commercial service until the required licences, penetration testing and security audits are complete.",
@@ -42,13 +41,15 @@ describe("the demonstration notice", () => {
       expect(res.headers.get("content-type") ?? "", path).toMatch(/text\/html/);
       const body = (await res.text()).split(/<body[^>]*>/)[1] ?? "";
       expect(body.trimStart().startsWith('<style>.iom-demo'), path).toBe(true);
-      expect(body).toContain(`<b>${DEMO_BANNER_LEAD}</b> ${DEMO_BANNER_BODY}`);
+      expect(body).toContain(`<div class="iom-demo-in">${DEMO_BANNER_BODY}</div>`);
+      // Owner, 2026-10-27: the bold "Demonstration only." lead is gone; the sentence stays.
+      expect(body, path).not.toContain("Demonstration only.");
     });
   }
 
   it("the /pay build carries the same words", () => {
     const tsx = readFileSync(new URL("../web/src/components/io/DemoBanner.tsx", import.meta.url), "utf8");
-    expect(tsx).toContain(JSON.stringify(DEMO_BANNER_LEAD));
+    expect(tsx).not.toContain("Demonstration only.");
     expect(tsx).toContain(JSON.stringify(DEMO_BANNER_BODY));
     const root = readFileSync(new URL("../web/src/routes/__root.tsx", import.meta.url), "utf8");
     expect(root).toMatch(/<body>\s*<DemoBanner \/>/);

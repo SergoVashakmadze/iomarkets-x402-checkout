@@ -6,16 +6,13 @@
 // Styles are in styles.css (.iom-demo), in the same gold as the server pages, and follow
 // the `.dark` class the console's theme toggle sets.
 
-export const DEMO_BANNER_LEAD = "Demonstration only.";
 export const DEMO_BANNER_BODY =
   "This is a technology demonstration that has been tested on real data with real money in a limited pilot. It is not offered as a commercial service until the required licences, penetration testing and security audits are complete.";
 
 export function DemoBanner() {
   return (
     <div className="iom-demo" role="note" aria-label="Demonstration notice">
-      <div className="iom-demo-in">
-        <b>{DEMO_BANNER_LEAD}</b> {DEMO_BANNER_BODY}
-      </div>
+      <div className="iom-demo-in">{DEMO_BANNER_BODY}</div>
     </div>
   );
 }

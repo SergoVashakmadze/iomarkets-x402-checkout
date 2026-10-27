@@ -304,15 +304,8 @@
   padding: 0.6rem 16px;
   overflow-wrap: anywhere;
 }
-.iom-demo b {
-  font-weight: 600;
-  color: #1b1500;
-}
 .dark .iom-demo {
   background: #3a2f14;
   color: #f4e7c3;
   border-bottom-color: #d9b85e;
-}
-.dark .iom-demo b {
-  color: #fff6dc;
 }
