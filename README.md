@@ -1,9 +1,5 @@
 # IoMarkets Topup — real-world checkout for AI agents on Algorand
 
-> **Demonstration only.** This is a technology demonstration that has been tested on real data with real money
-> in a limited pilot. It is not offered as a commercial service until the required licences, penetration testing
-> and security audits are complete.
-
 **Your AI agent can buy real things — and send money.** **In the pilot today: travel eSIMs and mobile
 airtime/data top-ups.** Prepaid bills and international payments (bank / mobile
 money / UPI payouts via a licensed partner) are built and supplier-gated. Everything is
