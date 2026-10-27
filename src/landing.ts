@@ -40,9 +40,7 @@ export function agentMd(f: PageFacts): string {
 Buy real-world goods for your principal.
 No account, no API key, no card. Pay per order in USDC on Algorand (${f.network}) using x402.
 
-**Status: technology demonstration.** It has been tested on real data with real money in a limited pilot, and it
-is not offered as a commercial service until the required licences, penetration testing and security audits are
-complete. Payments made here are real: they settle USDC on Algorand ${f.network}.
+**Payments made here are real:** they settle USDC on Algorand ${f.network}.
 
 **Available in this pilot: ${productList(f)}.** This list is what the wired suppliers can actually fulfil today, not a
 roadmap — \`GET ${f.base}/v1/catalog?type=<type>\` returns an empty list for anything not on it, and a quote
@@ -197,7 +195,7 @@ export function landingHtml(f: PageFacts): string {
     network: f.network, payTo: f.payTo ?? "", pubkey: f.pubkey, base: f.base,
     products: products.map((t) => ({ type: t, label: PRODUCT_LABEL[t] })),
   }).replace(/</g, "\\u003c");
-  const description = `${f.brand}: real-world checkout for AI agents. A technology demonstration, tested with real money in a limited pilot; not a commercial service. ${live[0].toUpperCase()}${live.slice(1)}, paid per order in USDC on Algorand via x402. Settle first, deliver second, refund on-chain, signed receipts, public ledger. Part of the IoMarkets® ecosystem.`;
+  const description = `${f.brand}: real-world checkout for AI agents. ${live[0].toUpperCase()}${live.slice(1)}, paid per order in USDC on Algorand via x402. Settle first, deliver second, refund on-chain, signed receipts, public ledger. Part of the IoMarkets® ecosystem.`;
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(f.brand)} — real-world checkout for AI agents on Algorand</title>
 <meta name="description" content="${esc(description)}">

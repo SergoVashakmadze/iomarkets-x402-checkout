@@ -150,7 +150,7 @@ export function agentCard(f: PageFacts): Record<string, unknown> {
     protocolVersion: PROTOCOL_VERSION,
     name: f.brand,
     description:
-      `Real-world checkout for AI agents: a technology demonstration, tested on real data with real money in a limited pilot, and not offered as a commercial service until the required licences, penetration testing and security audits are complete. Buys physical-world goods and services for an agent's principal — currently ${skillSummary(products)} — paid per order in USDC on Algorand (${f.network}) over x402. No account, no API key, no card. Money settles on-chain before anything is bought; a failed delivery is refunded to the paying address on-chain automatically; every terminal order carries an ed25519-signed receipt naming both transaction ids, and the full order ledger is public.`,
+      `Real-world checkout for AI agents. Buys physical-world goods and services for an agent's principal — currently ${skillSummary(products)} — paid per order in USDC on Algorand (${f.network}) over x402. No account, no API key, no card. Money settles on-chain before anything is bought; a failed delivery is refunded to the paying address on-chain automatically; every terminal order carries an ed25519-signed receipt naming both transaction ids, and the full order ledger is public.`,
     // No `url` and no `preferredTransport` — see the header note. The interface a caller
     // should actually use is documented, in prose, at documentationUrl.
     provider: { organization: "IoMarkets", url: f.site },
