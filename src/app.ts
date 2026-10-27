@@ -256,6 +256,23 @@ export function buildApp(deps: AppDeps): Hono<Env> {
 
   app.use("*", cors({ origin: "*", allowHeaders: ["*"], exposeHeaders: ["PAYMENT-RESPONSE", "PAYMENT-REQUIRED", "X-PAYMENT-RESPONSE"] }));
 
+  // Until 2026-10-27 no response carried any of these (Caddy adds none). Set by hand rather
+  // than with hono's secureHeaders(): its defaults add Cross-Origin-Resource-Policy:
+  // same-origin, which would stop registries and agent cards loading our logo, and
+  // Cross-Origin-Opener-Policy, which can break wallet popups on /pay and the pay links.
+  // Referrer-Policy is same-origin because /c/<code>, /p/<code> and the voucher batch ids
+  // are capability URLs and those pages load fonts and modules from other origins.
+  // No script CSP yet: the pages use inline scripts and jsdelivr imports throughout.
+  app.use("*", async (c, next) => {
+    await next();
+    const h = c.res.headers;
+    h.set("Strict-Transport-Security", "max-age=31536000");
+    h.set("X-Content-Type-Options", "nosniff");
+    h.set("Referrer-Policy", "same-origin");
+    h.set("X-Frame-Options", "DENY");
+    h.set("Content-Security-Policy", "frame-ancestors 'none'");
+  });
+
   // Nothing else in the stack caps a request body: Caddy does not by default and
   // @hono/node-server does not either, so an unauthenticated POST could ask this
   // process to buffer as much as it liked. 64 KB is orders of magnitude above any
