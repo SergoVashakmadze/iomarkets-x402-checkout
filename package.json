@@ -54,7 +54,7 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.4"
+    "vitest": "^5.0.5"
   },
   "_comment_pnpm_overrides": "qs arrives transitively (@modelcontextprotocol/sdk -> express -> body-parser). Two moderate advisories on 6.15.x: an array-limit bypass via bracket-key comma parsing, and a DoS via attacker-controlled isBuffer. Both are about parsing an attacker-supplied query string, and NOTHING here runs express — the MCP transport is WebStandardStreamableHTTP mounted in Hono, so express ships as dead weight and the vulnerable path is never reached. Pinned forward anyway: an unreachable vulnerability is still a vulnerability once someone wires a second transport, and a clean alert list is what makes the next alert legible.",
   "pnpm": {
