@@ -15,23 +15,28 @@ import { config } from "../src/config.js";
 
 const REQUIRED_TAG = "x402-global-challenge";
 
-const base = config.publicBaseUrl || process.argv[2];
-if (!base) throw new Error("set PUBLIC_BASE_URL or pass the base URL");
+// A local .env points PUBLIC_BASE_URL at localhost, which can never be listed.
+const configured = process.argv[2] || config.publicBaseUrl;
+const base = !configured || /\/\/(localhost|127\.0\.0\.1)\b/.test(configured) ? "https://iomarkets.app" : configured;
 const want = `${base}${config.apiPrefix}/orders`;
 let found: Record<string, unknown> | undefined;
-for (let offset = 0; offset < 20_000 && !found; offset += 500) {
-  const r = await fetch(`${config.facilitatorUrl}/discovery/resources?limit=500&offset=${offset}`);
-  const d = (await r.json()) as { items: Array<Record<string, unknown>> };
+// The facilitator caps a page at 100 whatever `limit` asks for, so advance by what
+// actually came back and stop at the total it reports.
+for (let offset = 0; offset < 20_000 && !found; ) {
+  const r = await fetch(`${config.facilitatorUrl}/discovery/resources?limit=100&offset=${offset}`);
+  const d = (await r.json()) as { items: Array<Record<string, unknown>>; pagination?: { total?: number } };
   if (!d.items?.length) break;
   found = d.items.find((i) => i.resourceUrl === want);
-  if (d.items.length < 500) break;
+  offset += d.items.length;
+  if (offset >= (d.pagination?.total ?? Infinity)) break;
 }
 if (!found) {
-  console.log(`❌ ${want} is NOT in the Bazaar yet. Make one real settled payment to it (pnpm buy …), then re-run.`);
+  console.log(`❌ ${want} is NOT in the Bazaar. Listing follows a real settled payment; re-run after one.`);
   process.exit(1);
 }
 console.log(`✅ listed: ${found.resourceUrl}`);
 console.log(`   settles: ${found.settleCount}  first: ${found.firstSeen}  last: ${found.lastSeen}`);
+console.log(`   network: ${(found.accepts as Array<{ network?: string }> | undefined)?.[0]?.network}`);
 console.log(`   description: ${String(found.description).slice(0, 120)}…`);
 const info = found.discoveryInfo as Record<string, unknown> | undefined;
 console.log(`   discoveryInfo: ${info ? Object.keys(info).join(", ") : "(none — check bodyType/input declaration)"}`);
