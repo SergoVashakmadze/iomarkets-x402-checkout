@@ -19,7 +19,7 @@ import {
 import type { Network } from "@x402/core/types";
 import { ExactAvmScheme } from "@x402/avm/exact/server";
 import { declareDiscoveryExtension, bazaarResourceServerExtension } from "@x402/extensions/bazaar";
-import { ALGORAND_MAINNET_GENESIS_HASH, ALGORAND_TESTNET_GENESIS_HASH, USDC_MAINNET_ASA_ID, USDC_TESTNET_ASA_ID } from "@x402/avm";
+import { ALGORAND_MAINNET_CAIP2, ALGORAND_TESTNET_CAIP2, USDC_MAINNET_ASA_ID, USDC_TESTNET_ASA_ID } from "@x402/avm";
 import { z } from "zod";
 
 import { checkPayout } from "./compliance.js";
@@ -237,11 +237,10 @@ export function buildApp(deps: AppDeps): Hono<Env> {
   const guard = new ReplayGuard();
   const limiter = new RateLimiter(config.limits.freeRoutePerMinute);
   const preflight = makePreflight(orders, db, guard);
-  // @x402/avm ≥2.2x exports spec-compliant 32-char CAIP-2 ids ("algorand:wGHE2…N73k"), but the
-  // GoPlausible facilitator, the Bazaar and the leaderboard all key on the FULL genesis hash form
-  // ("algorand:wGHE2…kit8="). Using the SDK constant makes the facilitator reject the route at
-  // startup ("Facilitator does not support scheme exact on network …"). Pin to the facilitator's form.
-  const NETWORK_CAIP2 = `algorand:${IS_MAINNET ? ALGORAND_MAINNET_GENESIS_HASH : ALGORAND_TESTNET_GENESIS_HASH}` as Network;
+  // The spec's 32-char CAIP-2 id ("algorand:wGHE2…N73k"). @x402/avm 2.29 accepts only this form,
+  // on the client as well, so an agent on a current SDK cannot pay a 402 that names the older
+  // full-genesis-hash form ("algorand:wGHE2…kit8="), and our own routes answer 500 with it.
+  const NETWORK_CAIP2 = (IS_MAINNET ? ALGORAND_MAINNET_CAIP2 : ALGORAND_TESTNET_CAIP2) as Network;
   const USDC_ASSET = IS_MAINNET ? USDC_MAINNET_ASA_ID : USDC_TESTNET_ASA_ID;
   /** The Global x402 Challenge's Bazaar marker. See the note on `extra` below for why
    *  it is carried in the payment requirements rather than the resource's `tags`. */

@@ -108,15 +108,15 @@ describe("asset opt-in", () => {
 });
 
 describe("facilitator support", () => {
-  const net = "algorand:wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8=";
+  const net = "algorand:wGHE2Pwdvd7S12BL5FaOP20EGYesN73k";
 
   it("passes when the exact scheme is listed for our network and asset", () => {
     expect(checkFacilitatorSupport({ kinds: [{ scheme: "exact", network: net, asset: String(USDC) }] }, { network: net, asset: USDC }).level).toBe("ok");
   });
 
-  // The facilitator keys on the FULL genesis hash, not the SDK's short id.
-  it("fails when only the short CAIP-2 id is listed", () => {
-    expect(checkFacilitatorSupport({ kinds: [{ scheme: "exact", network: "algorand:wGHE2PwdvdN73k", asset: String(USDC) }] }, { network: net, asset: USDC }).level).toBe("fail");
+  // The check is an exact match: the older full-genesis-hash form does not stand in for our id.
+  it("fails when only the full-genesis-hash form is listed", () => {
+    expect(checkFacilitatorSupport({ kinds: [{ scheme: "exact", network: "algorand:wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8=", asset: String(USDC) }] }, { network: net, asset: USDC }).level).toBe("fail");
   });
 
   it("fails on the wrong asset and warns when /supported is unreadable", () => {

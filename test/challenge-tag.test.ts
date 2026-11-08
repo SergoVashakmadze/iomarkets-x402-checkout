@@ -49,11 +49,11 @@ const kp = generateKeypair();
 const SUPPORTED = {
   kinds: [
     {
-      x402Version: 2, scheme: "exact", network: "algorand:wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8=",
+      x402Version: 2, scheme: "exact", network: "algorand:wGHE2Pwdvd7S12BL5FaOP20EGYesN73k",
       extra: { feePayer: "ZMFK2OI7ZBD2U27ISERZC4S6LKM6WMFJPZQ4MYNJDZ2VNBNMBA67RA22AA" },
     },
     {
-      x402Version: 2, scheme: "exact", network: "algorand:SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+      x402Version: 2, scheme: "exact", network: "algorand:SGO1GKSzyE7IEPItTxCByw9x8FmnrCDe",
       extra: { feePayer: "ZMFK2OI7ZBD2U27ISERZC4S6LKM6WMFJPZQ4MYNJDZ2VNBNMBA67RA22AA" },
     },
   ],
@@ -115,6 +115,15 @@ describe("the challenge tag on the wire", () => {
     expect(challenge.accepts.length).toBeGreaterThan(0);
     // The exact assertion the facilitator's listing makes.
     expect(challenge.accepts[0].extra?.tag).toBe("x402-global-challenge");
+  });
+
+  // @x402/avm 2.29 clients refuse any other form, so a 402 naming it cannot be paid.
+  it("names the network by its canonical 32-character CAIP-2 id", async () => {
+    const { header } = await paymentRequired();
+    const challenge = JSON.parse(Buffer.from(header!, "base64").toString("utf8")) as {
+      accepts: Array<{ network?: string }>;
+    };
+    expect(challenge.accepts[0].network).toMatch(/^algorand:[A-Za-z0-9]{32}$/);
   });
 
   it("still carries the asset alongside it, so the tag did not displace anything", async () => {
