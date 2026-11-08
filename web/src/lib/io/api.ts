@@ -130,7 +130,7 @@ export interface ClientConfig {
    */
   simulated: string[];
   network: string;
-  /** CAIP-2 network id, e.g. `algorand:wGHE2…kit8=`. */
+  /** CAIP-2 network id, e.g. `algorand:wGHE2…N73k`. */
   caip2: `${string}:${string}`;
   algod_url: string;
   usdc_asa: string;

@@ -512,13 +512,10 @@ describe("GET /v1/client-config gives the browser what it needs to pay, and noth
     expect(Number(body.min_order_usdc)).toBeGreaterThan(0);
   });
 
-  it("uses the facilitator's full genesis-hash CAIP-2 form, not the 32-char one", async () => {
+  it("gives the browser the canonical 32-char CAIP-2 id, the only form @x402 2.29 accepts", async () => {
     const { app } = build();
     const body = await (await app.request("/v1/client-config")).json();
-    expect(body.caip2).toMatch(/^algorand:/);
-    // The spec-compliant short form is 32 chars; the facilitator keys on the full
-    // base64 genesis hash, which ends in "=".
-    expect(body.caip2.split(":")[1]).toMatch(/=$/);
+    expect(body.caip2).toMatch(/^algorand:[A-Za-z0-9]{32}$/);
   });
 
   it("leaks no secret — no key, mnemonic or supplier credential", async () => {

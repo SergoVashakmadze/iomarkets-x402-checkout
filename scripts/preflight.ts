@@ -7,7 +7,7 @@
 // Read-only — it never signs or sends anything.
 
 import algosdk from "algosdk";
-import { ALGORAND_MAINNET_GENESIS_HASH, ALGORAND_TESTNET_GENESIS_HASH } from "@x402/avm";
+import { ALGORAND_MAINNET_CAIP2, ALGORAND_TESTNET_CAIP2 } from "@x402/avm";
 import { config } from "../src/config.js";
 import { toMicro } from "../src/money.js";
 import { makeSupplier } from "../src/suppliers/index.js";
@@ -45,7 +45,7 @@ async function facilitatorSupported(): Promise<{ kinds?: Array<{ scheme?: string
  * short id, so this must not be "simplified".
  */
 const caip2 = (): string =>
-  `algorand:${config.network === "mainnet" ? ALGORAND_MAINNET_GENESIS_HASH : ALGORAND_TESTNET_GENESIS_HASH}`;
+  config.network === "mainnet" ? ALGORAND_MAINNET_CAIP2 : ALGORAND_TESTNET_CAIP2;
 
 async function supplierCheck(): Promise<CheckResult> {
   const name = `supplier (${config.supplier.kind})`;
