@@ -155,11 +155,11 @@ export const BRAND_ASSETS = {
  *  "IoMarkets Ecosystem" dropdown (iomarkets.news header). This site is the `current` row. */
 const ECOSYSTEM: ReadonlyArray<{ name: string; description: string; href: string; icon: string; current?: boolean }> = [
   { name: "IoMarkets.org", description: "Organization", href: "https://iomarkets.org", icon: "🏛️" },
-  { name: "IoMarkets.io", description: "AI-Native Web3 Capital Markets", href: "https://iomarkets.io", icon: "📈" },
+  { name: "IoMarkets.io", description: "Universal Exchange", href: "https://iomarkets.io", icon: "📈" },
   { name: "IoMarkets.money", description: "Digital Money, Stablecoins & Payments", href: "https://iomarkets.money", icon: "💰" },
   { name: "IoMarkets.app", description: "Real-World Checkout for AI Agents", href: "/", icon: "🛒", current: true },
   { name: "IoMarkets.xyz", description: "Digital Collectibles & NFT Platform", href: "https://iomarkets.xyz", icon: "🎨" },
-  { name: "IoMarkets.pro", description: "Universal Exchange - Pro Trading Suite", href: "https://iomarkets.pro", icon: "💹" },
+  { name: "IoMarkets.pro", description: "Agentic Financial Data Platform", href: "https://iomarkets.pro", icon: "💹" },
   { name: "IoMarkets.ai", description: "Verifiable AI for Finance", href: "https://iomarkets.ai", icon: "🤖" },
   { name: "IoMarkets.co", description: "Corporate Finance & Investor Relations", href: "https://iomarkets.co", icon: "🏢" },
   { name: "IoMarkets.vc", description: "Venture Capital Investment Fund", href: "https://iomarkets.vc", icon: "🚀" },
